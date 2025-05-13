@@ -124,7 +124,7 @@ const routes = [
         name: "Giám sát Camera",
         key: "surveillance",
         route: "/dashboards/surveillance",
-        component: <Sales />,
+        component: <ProductPage />,
       },
     ],
   },
@@ -143,10 +143,15 @@ const routes = [
       {
         name: "TRAFSEC",
         key: "pricing-page",
-        route: "/pages/pricing-page",
-        component: <PricingPage />,
+        route: "/pages/widgets",
+        component: <Widgets />,
       },
-      { name: "Thiết bị", key: "rtl", route: "/pages/rtl", component: <RTL /> },
+      {
+        name: "Thiết bị",
+        key: "rtl",
+        route: "/pages/widgets",
+        component: <Widgets />,
+      },
       {
         name: "Người dùng",
         key: "widgets",

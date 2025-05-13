@@ -74,7 +74,7 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
   useEffect(() => {
     setOpenCollapse(collapseName);
     setOpenNestedCollapse(itemParentName);
-  }, []);
+  }, [collapseName, itemParentName]);
 
   useEffect(() => {
     // A function that sets the mini state of the sidenav.
