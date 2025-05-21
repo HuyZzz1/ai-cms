@@ -33,15 +33,11 @@ import BookingCard from "examples/Cards/BookingCard";
 import RateOfViolations from "layouts/dashboards/analytics/components/RateOfViolations";
 import ReportsBarChart from "layouts/dashboards/analytics/components/ReportsBarChart";
 import ReportsLineChart from "layouts/dashboards/analytics/components/ReportsLineChart";
+import TrafficOverview from "layouts/dashboards/analytics/components/TrafficOverview";
 
 // Data
 import reportsBarChartData from "layouts/dashboards/analytics/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboards/analytics/data/reportsLineChartData";
-
-// Images
-import booking1 from "assets/images/products/product-1-min.jpg";
-import booking2 from "assets/images/products/product-2-min.jpg";
-import booking3 from "assets/images/products/product-3-min.jpg";
 
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -63,7 +59,7 @@ import MDButton from "components/MDButton";
 import { Box, Typography } from "@mui/material";
 
 const Analytics = () => {
-  const [selectedTime, setSelectedTime] = useState("Hôm nay");
+  const [selectedTime, setSelectedTime] = useState("Ngày");
   const { sales, tasks } = reportsLineChartData;
 
   // Action buttons for the BookingCard
@@ -108,11 +104,12 @@ const Analytics = () => {
             display="flex"
             flexWrap="wrap"
             alignItems="center"
+            justifyContent="end"
             gap={4}
           >
             {/* Bộ lọc thời gian */}
             <div className="flex items-center border border-gray-400 rounded-[12px] h-[32px] overflow-hidden">
-              {["Hôm nay", "Tuần này", "Tháng này"].map((label, index, arr) => (
+              {["Ngày", "Tuần", "Tháng"].map((label, index, arr) => (
                 <div
                   key={label}
                   onClick={() => setSelectedTime(label)}
@@ -171,7 +168,7 @@ const Analytics = () => {
             }}
           >
             <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3} sx={{ height: "100%", minHeight: 300 }}>
+              <MDBox sx={{ height: "100%", minHeight: 300 }}>
                 <ReportsBarChart
                   color="success"
                   title="Biểu đồ thời gian thực về lưu lượng tham gia giao thông theo giờ/ngày."
@@ -180,7 +177,7 @@ const Analytics = () => {
               </MDBox>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3} sx={{ height: "100%", minHeight: 300 }}>
+              <MDBox sx={{ height: "100%", minHeight: 300 }}>
                 <ReportsLineChart
                   color="success"
                   title="Biểu đồ thời gian thực về số vi phạm theo giờ/ngày."
@@ -189,7 +186,7 @@ const Analytics = () => {
               </MDBox>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3} sx={{ height: "100%", minHeight: 300 }}>
+              <MDBox sx={{ height: "100%", minHeight: 300 }}>
                 <RateOfViolations />
               </MDBox>
             </Grid>
@@ -203,11 +200,6 @@ const Analytics = () => {
                   icon="weekend"
                   title="Tổng số phương tiện giám sát hôm nay"
                   count={281}
-                  percentage={{
-                    color: "success",
-                    amount: "+55%",
-                    label: "than lask week",
-                  }}
                 />
               </MDBox>
             </Grid>
@@ -217,11 +209,6 @@ const Analytics = () => {
                   icon="leaderboard"
                   title="Tổng số Vi Phạm ATGT theo ngày"
                   count="2,300"
-                  percentage={{
-                    color: "success",
-                    amount: "+3%",
-                    label: "than last month",
-                  }}
                 />
               </MDBox>
             </Grid>
@@ -231,11 +218,6 @@ const Analytics = () => {
                   icon="store"
                   title="Tổng số vụ TNGT theo ngày"
                   count="34k"
-                  percentage={{
-                    color: "success",
-                    amount: "+1%",
-                    label: "than yesterday",
-                  }}
                 />
               </MDBox>
             </Grid>
@@ -245,32 +227,40 @@ const Analytics = () => {
                   icon="person_add"
                   title="Số camera đang hoạt động"
                   count="+91"
-                  percentage={{
-                    color: "success",
-                    amount: "",
-                    label: "Just updated",
-                  }}
                 />
               </MDBox>
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox>
+        <MDBox pb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={3}>
               <MDBox mt={3}>
                 <Card sx=".card-header">
-                  <MDBox
-                    component="img"
-                    src={booking1}
-                    alt="img_1"
-                    borderRadius="md"
-                    shadow="md"
-                    width="100%"
-                    height="100%"
-                    position="relative"
-                    zIndex={1}
-                  />
+                  <Box
+                    sx={{
+                      position: "relative",
+                      paddingTop: "56.25%",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <iframe
+                      src="https://www.youtube.com/embed/ByED80IKdIU?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1"
+                      title="YouTube Live Stream"
+                      allow="autoplay"
+                      allowFullScreen={false}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  </Box>
+
                   <Box textAlign="center" p={2}>
                     <Typography variant="h6" fontWeight="bold">
                       <LocationOnIcon fontSize="small" color="error" />
@@ -320,17 +310,29 @@ const Analytics = () => {
             <Grid item xs={12} md={6} lg={3}>
               <MDBox mt={3}>
                 <Card sx=".card-header">
-                  <MDBox
-                    component="img"
-                    src={booking2}
-                    alt="img_1"
-                    borderRadius="md"
-                    shadow="md"
-                    width="100%"
-                    height="100%"
-                    position="relative"
-                    zIndex={1}
-                  />
+                  <Box
+                    sx={{
+                      position: "relative",
+                      paddingTop: "56.25%", // tỷ lệ 16:9
+                      borderRadius: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <iframe
+                      src="https://www.youtube.com/embed/MMmXs8A1SOk?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1"
+                      title="YouTube Live Stream"
+                      allow="autoplay"
+                      allowFullScreen={false}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  </Box>
                   <Box textAlign="center" p={2}>
                     <Typography variant="h6" fontWeight="bold">
                       <LocationOnIcon fontSize="small" color="error" />
@@ -380,17 +382,29 @@ const Analytics = () => {
             <Grid item xs={12} md={6} lg={3}>
               <MDBox mt={3}>
                 <Card sx=".card-header">
-                  <MDBox
-                    component="img"
-                    src={booking3}
-                    alt="img_1"
-                    borderRadius="md"
-                    shadow="md"
-                    width="100%"
-                    height="100%"
-                    position="relative"
-                    zIndex={1}
-                  />
+                  <Box
+                    sx={{
+                      position: "relative",
+                      paddingTop: "56.25%", // tỷ lệ 16:9
+                      borderRadius: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <iframe
+                      src="https://www.youtube.com/embed/5WN2PJ_Qxjs?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1"
+                      title="YouTube Live Stream"
+                      allow="autoplay"
+                      allowFullScreen={false}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  </Box>
                   <Box textAlign="center" p={2}>
                     <Typography variant="h6" fontWeight="bold">
                       <LocationOnIcon fontSize="small" color="error" />
@@ -439,17 +453,29 @@ const Analytics = () => {
             <Grid item xs={12} md={6} lg={3}>
               <MDBox mt={3}>
                 <Card sx=".card-header">
-                  <MDBox
-                    component="img"
-                    src={booking3}
-                    alt="img_1"
-                    borderRadius="md"
-                    shadow="md"
-                    width="100%"
-                    height="100%"
-                    position="relative"
-                    zIndex={1}
-                  />
+                  <Box
+                    sx={{
+                      position: "relative",
+                      paddingTop: "56.25%", // tỷ lệ 16:9
+                      borderRadius: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <iframe
+                      src="https://www.youtube.com/embed/1fiF7B6VkCk?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1"
+                      title="YouTube Live Stream"
+                      allow="autoplay"
+                      allowFullScreen={false}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  </Box>
                   <Box textAlign="center" p={2}>
                     <Typography variant="h6" fontWeight="bold">
                       <LocationOnIcon fontSize="small" color="error" />
@@ -496,6 +522,9 @@ const Analytics = () => {
               </MDBox>
             </Grid>
           </Grid>
+        </MDBox>
+        <MDBox>
+          <TrafficOverview />
         </MDBox>
       </MDBox>
     </DashboardLayout>

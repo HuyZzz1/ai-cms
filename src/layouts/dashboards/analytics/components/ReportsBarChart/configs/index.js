@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 3 PRO React - v2.4.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 function configs(labels, datasets) {
   return {
     data: {
@@ -27,6 +12,9 @@ function configs(labels, datasets) {
           backgroundColor: "#44a047",
           data: datasets.data,
           maxBarThickness: 44,
+          datalabels: {
+            display: () => false, // ✅ Cách chắc chắn nhất để vô hiệu hóa nếu bị override
+          },
         },
       ],
     },
@@ -36,6 +24,9 @@ function configs(labels, datasets) {
       plugins: {
         legend: {
           display: false,
+        },
+        datalabels: {
+          display: () => false, // ✅ Vô hiệu hóa ở cấp global chart options
         },
       },
       interaction: {
@@ -93,5 +84,3 @@ function configs(labels, datasets) {
     },
   };
 }
-
-export default configs;

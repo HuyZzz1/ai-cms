@@ -26,15 +26,15 @@ import { useMaterialUIController } from "context";
 
 const MDTypography = forwardRef(
   (
-    { 
-      color = "dark", 
-      fontWeight = false, 
-      textTransform = "none", 
-      verticalAlign = "unset", 
-      textGradient = false, 
-      opacity = 1, 
-      children, 
-      ...rest 
+    {
+      color = "dark",
+      fontWeight = false,
+      textTransform = "none",
+      verticalAlign = "unset",
+      textGradient = false,
+      opacity = 1,
+      children,
+      ...rest
     },
     ref
   ) => {
@@ -77,7 +77,12 @@ MDTypography.propTypes = {
     "white",
   ]),
   fontWeight: PropTypes.oneOf([false, "light", "regular", "medium", "bold"]),
-  textTransform: PropTypes.oneOf(["none", "capitalize", "uppercase", "lowercase"]),
+  textTransform: PropTypes.oneOf([
+    "none",
+    "capitalize",
+    "uppercase",
+    "lowercase",
+  ]),
   verticalAlign: PropTypes.oneOf([
     "unset",
     "baseline",
