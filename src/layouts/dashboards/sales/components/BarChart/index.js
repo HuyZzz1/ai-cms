@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import PropTypes from "prop-types";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -33,7 +32,35 @@ const chart = {
         120, 110, 115, 100, 105, 130, 500, 600, 550, 200, 180, 190, 160, 170,
         180, 220, 700, 650, 620, 300, 280, 290, 310, 320,
       ],
-      color: "error",
+      backgroundColor: [
+        "#fde0c5",
+        "#fddbb9",
+        "#fcd6ad",
+        "#fbd1a1",
+        "#fbcc95",
+        "#fac789",
+        "#fabf7a",
+        "#f8b15f",
+        "#f6a344",
+        "#f3942a",
+        "#f18610",
+        "#ec7808",
+        "#e96a06",
+        "#e65c05",
+        "#e34e04",
+        "#e04003",
+        "#dd3202",
+        "#da2401",
+        "#d71600",
+        "#c51300",
+        "#b21100",
+        "#a00f00",
+        "#8d0d00",
+        "#7a0b00",
+      ],
+      borderRadius: 4,
+      borderWidth: 0,
+      maxBarThickness: 35,
     },
   ],
 };
@@ -58,6 +85,7 @@ const options = {
       font: {
         size: 16,
       },
+      color: "black",
     },
   },
   scales: {
@@ -82,25 +110,11 @@ function HorizontalBarChart({
   icon = { color: "info", component: "" },
   title = "",
   description = "",
-  height = "19.125rem",
+  height = "400px",
 }) {
-  const chartDatasets = chart.datasets
-    ? chart.datasets.map((dataset) => ({
-        ...dataset,
-        weight: 5,
-        borderWidth: 0,
-        borderRadius: 4,
-        backgroundColor: `rgba(244, 67, 54, ${
-          0.3 + dataset.data.map((v) => v / 700).map((n) => Math.min(n, 1))
-        })`,
-        fill: false,
-        maxBarThickness: 35,
-      }))
-    : [];
-
   const data = {
     labels: chart.labels,
-    datasets: chartDatasets,
+    datasets: chart.datasets,
   };
 
   const renderChart = (
@@ -126,7 +140,7 @@ function HorizontalBarChart({
             </MDBox>
           )}
           <MDBox mt={icon.component ? -2 : 0}>
-            {title && <MDTypography variant="h6">{title}</MDTypography>}
+            <MDTypography variant="h6">{title}</MDTypography>
             <MDBox mb={2}>
               <MDTypography component="div" variant="button" color="text">
                 {description}
@@ -146,26 +160,7 @@ function HorizontalBarChart({
     </MDBox>
   );
 
-  return title || description ? <Card>{renderChart}</Card> : renderChart;
+  return <Card>{renderChart}</Card>;
 }
-
-HorizontalBarChart.propTypes = {
-  icon: PropTypes.shape({
-    color: PropTypes.oneOf([
-      "primary",
-      "secondary",
-      "info",
-      "success",
-      "warning",
-      "error",
-      "light",
-      "dark",
-    ]),
-    component: PropTypes.node,
-  }),
-  title: PropTypes.string,
-  description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
 
 export default HorizontalBarChart;

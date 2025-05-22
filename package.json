@@ -28,6 +28,7 @@
     "@react-jvectormap/world": "1.1.2",
     "ajv": "8.17.1",
     "chart.js": "4.4.6",
+    "chartjs-plugin-annotation": "^3.1.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "chroma-js": "3.1.2",
     "draft-convert": "2.1.13",
