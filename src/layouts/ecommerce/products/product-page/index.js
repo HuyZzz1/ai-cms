@@ -1,65 +1,31 @@
-/**
-=========================================================
-* Material Dashboard 3 PRO React - v2.4.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
 import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
-
-// Material Dashboard 3 PRO React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
-// Material Dashboard 3 PRO React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
-
-// ProductPage page components
-import ProductImages from "layouts/ecommerce/products/product-page/components/ProductImages";
-import ProductInfo from "layouts/ecommerce/products/product-page/components/ProductInfo";
-
-// Data
+import ProductDetailPage from "layouts/ecommerce/products/product-page/components/ProductDetailPage";
 import dataTableData from "layouts/ecommerce/products/product-page/data/dataTableData";
 
 function ProductPage() {
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      <DashboardNavbar breadcrumbTitle="Giám sát Camera" />
       <MDBox py={3}>
         <Card sx={{ overflow: "visible" }}>
           <MDBox p={3}>
             <MDBox mb={3}>
               <MDTypography variant="h5" fontWeight="medium">
-                Product Details
+                Giám sát Camera
               </MDTypography>
             </MDBox>
 
-            <Grid container spacing={3}>
-              <Grid item xs={12} lg={6} xl={5}>
-                <ProductImages />
-              </Grid>
-              <Grid item xs={12} lg={5} sx={{ mx: "auto" }}>
-                <ProductInfo />
-              </Grid>
-            </Grid>
+            <ProductDetailPage />
 
             <MDBox mt={8} mb={2}>
               <MDBox mb={1} ml={2}>
                 <MDTypography variant="h5" fontWeight="medium">
-                  Other Products
+                  Cảnh báo & Sự cố gần nhất
                 </MDTypography>
               </MDBox>
               <DataTable
@@ -72,7 +38,6 @@ function ProductPage() {
           </MDBox>
         </Card>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }

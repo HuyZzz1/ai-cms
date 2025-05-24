@@ -27,11 +27,11 @@ import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-function Breadcrumbs({ 
+function Breadcrumbs({
   icon = "home",
   title = "",
   route = ["", ""],
-  light = false 
+  light = false,
 }) {
   const routes = route.slice(0, -1);
 

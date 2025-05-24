@@ -44,7 +44,9 @@ import NewUser from "layouts/pages/users/new-user";
 import Settings from "layouts/pages/account/settings";
 import Billing from "layouts/pages/account/billing";
 import Invoice from "layouts/pages/account/invoice";
-import Timeline from "layouts/pages/projects/timeline";
+import CameraManager from "layouts/pages/projects/camera";
+import Trafsec from "layouts/pages/projects/trafsec";
+import Device from "layouts/pages/projects/device";
 import PricingPage from "layouts/pages/pricing-page";
 import Widgets from "layouts/pages/widgets";
 import RTL from "layouts/pages/rtl";
@@ -136,21 +138,21 @@ const routes = [
     collapse: [
       {
         name: "VMS(Quản lí Camera)",
-        key: "projects",
-        route: "/pages/projects/timeline",
-        component: <Timeline />,
+        key: "camera",
+        route: "/pages/camera",
+        component: <CameraManager />,
       },
       {
         name: "TRAFSEC",
-        key: "pricing-page",
-        route: "/pages/widgets",
-        component: <Widgets />,
+        key: "trafsec",
+        route: "/pages/trafsec",
+        component: <Trafsec />,
       },
       {
         name: "Thiết bị",
-        key: "rtl",
-        route: "/pages/widgets",
-        component: <Widgets />,
+        key: "device",
+        route: "/pages/device",
+        component: <Device />,
       },
       {
         name: "Người dùng",

@@ -203,7 +203,11 @@ const DashboardNavbar = ({
           </IconButton>
           <Breadcrumbs
             icon="home"
-            title={breadcrumbTitle || route[route.length - 1]}
+            title={
+              breadcrumbRoute
+                ? breadcrumbRoute[breadcrumbRoute.length - 1]
+                : route[route.length - 1]
+            }
             route={breadcrumbRoute || route}
             light={light}
           />
