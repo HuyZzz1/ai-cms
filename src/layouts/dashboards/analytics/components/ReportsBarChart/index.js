@@ -1,24 +1,5 @@
-/**
-=========================================================
-* Material Dashboard 3 PRO React - v2.4.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useMemo } from "react";
-
-// porp-types is a library for typechecking of props
 import PropTypes from "prop-types";
-
-// react-chartjs-2 components
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -31,16 +12,11 @@ import {
 } from "chart.js";
 
 import ChartDataLabels from "chartjs-plugin-datalabels";
-ChartJS.unregister(ChartDataLabels);
-// @mui material components
 import Card from "@mui/material/Card";
-
-// Material Dashboard 3 PRO React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
-// ReportsBarChart configurations
 import configs from "examples/Charts/BarCharts/ReportsBarChart/configs";
+ChartJS.unregister(ChartDataLabels);
 
 ChartJS.register(
   CategoryScale,
