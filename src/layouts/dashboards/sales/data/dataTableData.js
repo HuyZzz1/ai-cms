@@ -1,74 +1,127 @@
-/**
-=========================================================
-* Material Dashboard 3 PRO React - v2.4.0
-=========================================================
+import Icon from "@mui/material/Icon";
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
+import MDProgress from "components/MDProgress";
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
+const columns = [
+  {
+    Header: "vị trí",
+    accessor: "location",
+    Cell: ({ value }) => (
+      <MDBox display="flex" flexDirection="column">
+        <MDTypography variant="button" fontWeight="medium">
+          {value.name}
+        </MDTypography>
+        <MDTypography variant="caption" color="text">
+          {value.cameraCount.toLocaleString()} camera{" "}
+          <Icon fontSize="small" sx={{ color: "#f44336", ml: 0.5 }}>
+            place
+          </Icon>
+        </MDTypography>
+      </MDBox>
+    ),
+  },
+  {
+    Header: "số vi phạm",
+    accessor: "violations",
+  },
+  {
+    Header: "camera ID",
+    accessor: "camera",
+    Cell: ({ value }) => (
+      <MDTypography variant="caption" title={value.tooltip} color="text">
+        {value.id}
+      </MDTypography>
+    ),
+  },
+  {
+    Header: "tỷ lệ xử lý",
+    accessor: "processing",
+    Cell: ({ value }) => {
+      let color = "success";
+      if (value < 60) color = "error";
+      else if (value < 80) color = "warning";
 
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// Sales dashboard components
-import ProductCell from "layouts/dashboards/sales/components/ProductCell";
-import RefundsCell from "layouts/dashboards/sales/components/RefundsCell";
-import DefaultCell from "layouts/dashboards/sales/components/DefaultCell";
-
-// Images
-import nikeV22 from "assets/images/ecommerce/blue-shoe.jpeg";
-import businessKit from "assets/images/ecommerce/black-mug.jpeg";
-import blackChair from "assets/images/ecommerce/black-chair.jpeg";
-import wirelessCharger from "assets/images/ecommerce/bang-sound.jpeg";
-import tripKit from "assets/images/ecommerce/photo-tools.jpeg";
-
-const dataTableData = {
-  columns: [
-    { Header: "product", accessor: "product", width: "55%" },
-    { Header: "value", accessor: "value" },
-    { Header: "ads spent", accessor: "adsSpent", align: "center" },
-    { Header: "refunds", accessor: "refunds", align: "center" },
-  ],
-
-  rows: [
-    {
-      product: <ProductCell image={nikeV22} name="Nike v22 Running" orders={8.232} />,
-      value: <DefaultCell>$130.992</DefaultCell>,
-      adsSpent: <DefaultCell>$9.500</DefaultCell>,
-      refunds: <RefundsCell value={13} icon={{ color: "success", name: "keyboard_arrow_up" }} />,
+      return (
+        <MDBox width="100px">
+          <MDTypography
+            variant="caption"
+            color="text"
+            display="flex"
+            alignItems="center"
+            gap={1}
+            mb={0.5}
+          >
+            {value}%
+          </MDTypography>
+          <MDBox width="100%">
+            <MDBox width="8rem">
+              <MDProgress variant="gradient" value={value} color={color} />
+            </MDBox>
+          </MDBox>
+        </MDBox>
+      );
     },
-    {
-      product: (
-        <ProductCell image={businessKit} name="Business Kit (Mug + Notebook)" orders={12.821} />
-      ),
-      value: <DefaultCell>$80.250</DefaultCell>,
-      adsSpent: <DefaultCell>$4.200</DefaultCell>,
-      refunds: <RefundsCell value={40} icon={{ color: "error", name: "keyboard_arrow_down" }} />,
-    },
-    {
-      product: <ProductCell image={blackChair} name="Black Chair" orders={2.421} />,
-      value: <DefaultCell>$40.600</DefaultCell>,
-      adsSpent: <DefaultCell>$9.430</DefaultCell>,
-      refunds: <RefundsCell value={54} icon={{ color: "success", name: "keyboard_arrow_up" }} />,
-    },
-    {
-      product: <ProductCell image={wirelessCharger} name="Wireless Charger" orders={5.921} />,
-      value: <DefaultCell>$91.300</DefaultCell>,
-      adsSpent: <DefaultCell>$7.364</DefaultCell>,
-      refunds: <RefundsCell value={5} icon={{ color: "error", name: "keyboard_arrow_down" }} />,
-    },
-    {
-      product: (
-        <ProductCell image={tripKit} name="Mountain Trip Kit (Camera + Backpack)" orders={921} />
-      ),
-      value: <DefaultCell>$140.925</DefaultCell>,
-      adsSpent: <DefaultCell>$20.531</DefaultCell>,
-      refunds: <RefundsCell value={121} icon={{ color: "success", name: "keyboard_arrow_up" }} />,
-    },
-  ],
-};
+  },
+  {
+    Header: "",
+    accessor: "mapAction",
+    width: "30px",
+    align: "center",
+    Cell: () => (
+      <MDBox
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+          minHeight: "48px", // đảm bảo icon không bị đè
+        }}
+      >
+        <Icon
+          fontSize="small"
+          color="info"
+          sx={{ cursor: "pointer" }}
+          titleAccess="Xem bản đồ"
+        >
+          info
+        </Icon>
+      </MDBox>
+    ),
+  },
+];
 
-export default dataTableData;
+const rows = [
+  {
+    location: { name: "QL1A_TP HCM, Quận 2", cameraCount: 8232 },
+    violations: 221,
+    camera: { id: "CAM_0975", tooltip: "Camera cố định, trạng thái OK" },
+    processing: 78,
+  },
+  {
+    location: { name: "Ngã Tư Nguyễn Văn Huyên, Hà Nội", cameraCount: 12821 },
+    violations: 185,
+    camera: { id: "CAM_0975", tooltip: "Camera AI nhận diện khuôn mặt" },
+    processing: 62,
+  },
+  {
+    location: { name: "Phạm Văn Đồng, Thủ Đức", cameraCount: 2421 },
+    violations: 143,
+    camera: { id: "CAM_0975", tooltip: "Camera lắp đặt trên cột đèn" },
+    processing: 68,
+  },
+  {
+    location: { name: "Cầu Chương Dương, Hà Nội", cameraCount: 5921 },
+    violations: 138,
+    camera: { id: "CAM_0975", tooltip: "Camera gắn cố định trên cầu" },
+    processing: 78,
+  },
+  {
+    location: { name: "Ngã ba Huế - Đà Nẵng", cameraCount: 921 },
+    violations: 119,
+    camera: { id: "CAM_0975", tooltip: "Camera quay 360 độ" },
+    processing: 82,
+  },
+];
+
+export default { columns, rows };

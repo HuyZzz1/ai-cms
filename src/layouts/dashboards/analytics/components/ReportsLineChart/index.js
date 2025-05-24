@@ -34,8 +34,6 @@ import {
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Divider from "@mui/material/Divider";
-import Icon from "@mui/material/Icon";
 
 // Material Dashboard 3 PRO React components
 import MDBox from "components/MDBox";
@@ -65,7 +63,7 @@ function ReportsLineChart({
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   return (
-    <Card sx={{ height: "100%" }}>
+    <Card className="h-full">
       <MDBox p={2}>
         <MDTypography variant="h6" textTransform="capitalize">
           {title}
@@ -79,10 +77,10 @@ function ReportsLineChart({
           {description}
         </MDTypography>
       </MDBox>
-      <MDBox pl={2} pb={2} pr={3}>
+      <MDBox pl={2} pb={2} pr={3} height="100%">
         {useMemo(
           () => (
-            <MDBox borderRadius="lg" height="12.5rem">
+            <MDBox borderRadius="lg" height="100%">
               <Line data={data} options={options} redraw />
             </MDBox>
           ),

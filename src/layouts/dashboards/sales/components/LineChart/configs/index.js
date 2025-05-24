@@ -1,22 +1,25 @@
+/**
+=========================================================
+* Material Dashboard 3 PRO React - v2.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/nextjs-material-dashboard-pro
+* Copyright 2024 Creative Tim (https://www.creative-tim.com)
+
+Coded by www.creative-tim.com
+
+ =========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
+// Material Dashboard 3 PRO React base styles
+import typography from "assets/theme/base/typography";
+
 function configs(labels, datasets) {
   return {
     data: {
       labels,
-      datasets: [
-        {
-          label: datasets.label,
-          tension: 0.4,
-          borderWidth: 0,
-          borderRadius: 4,
-          borderSkipped: false,
-          backgroundColor: "#44a047",
-          data: datasets.data,
-          maxBarThickness: 44,
-          datalabels: {
-            display: () => false, // ✅ Cách chắc chắn nhất để vô hiệu hóa nếu bị override
-          },
-        },
-      ],
+      datasets: [...datasets],
     },
     options: {
       responsive: true,
@@ -24,9 +27,6 @@ function configs(labels, datasets) {
       plugins: {
         legend: {
           display: false,
-        },
-        datalabels: {
-          display: () => false, // ✅ Vô hiệu hóa ở cấp global chart options
         },
       },
       interaction: {
@@ -41,21 +41,18 @@ function configs(labels, datasets) {
             drawOnChartArea: true,
             drawTicks: false,
             borderDash: [5, 5],
-            color: "#e5e5e5",
+            color: "#c1c4ce5c",
           },
           ticks: {
-            suggestedMin: 0,
-            suggestedMax: 500,
-            beginAtZero: true,
+            display: true,
             padding: 10,
+            color: "#b2b9bf",
             font: {
-              size: 14,
-              weight: 400,
-              family: "Inter",
+              size: 11,
+              family: typography.fontFamily,
               style: "normal",
               lineHeight: 2,
             },
-            color: "#747474",
           },
         },
         x: {
@@ -63,18 +60,17 @@ function configs(labels, datasets) {
             drawBorder: false,
             display: true,
             drawOnChartArea: true,
-            drawTicks: false,
+            drawTicks: true,
             borderDash: [5, 5],
-            color: "rgba(255, 255, 255, 0)",
+            color: "#c1c4ce5c",
           },
           ticks: {
             display: true,
-            color: "#747474",
-            padding: 10,
+            color: "#b2b9bf",
+            padding: 20,
             font: {
-              size: 14,
-              weight: 400,
-              family: "Inter",
+              size: 11,
+              family: typography.fontFamily,
               style: "normal",
               lineHeight: 2,
             },
@@ -84,3 +80,5 @@ function configs(labels, datasets) {
     },
   };
 }
+
+export default configs;

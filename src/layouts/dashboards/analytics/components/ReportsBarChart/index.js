@@ -30,6 +30,8 @@ import {
   Legend,
 } from "chart.js";
 
+import ChartDataLabels from "chartjs-plugin-datalabels";
+ChartJS.unregister(ChartDataLabels);
 // @mui material components
 import Card from "@mui/material/Card";
 
@@ -59,7 +61,7 @@ function ReportsBarChart({
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   return (
-    <Card sx={{ height: "100%" }}>
+    <Card className="h-full">
       <MDBox p={2}>
         <MDTypography variant="h6" textTransform="capitalize">
           {title}
@@ -73,10 +75,10 @@ function ReportsBarChart({
           {description}
         </MDTypography>
       </MDBox>
-      <MDBox pl={2} pb={2} pr={3}>
+      <MDBox pl={2} pb={2} pr={3} height="100%">
         {useMemo(
           () => (
-            <MDBox borderRadius="lg" height="12.5rem">
+            <MDBox borderRadius="lg" height="100%">
               <Bar data={data} options={options} redraw />
             </MDBox>
           ),
