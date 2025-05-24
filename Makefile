@@ -2,7 +2,7 @@ ccred=\033[0;31m
 ccyellow=\033[0;33m
 ccend=\033[0m
 
-SERVER_IP = 103.153.65.49
+SERVER_IP = 103.95.197.123
 DEPLOY_BRANCH = develop
 
 deploy_production: print_detail exec_deploy_cmd clean
@@ -15,11 +15,11 @@ exec_deploy_cmd:
 	@echo "...${ccyellow}Pushing to PRODUCTION SERVER server${ccend}..."
 	@git push origin ${DEPLOY_BRANCH}
 	@echo "...${ccyellow}Connecting SERVER server${ccend}..."
-	@ssh -p 2224 ubuntu@${SERVER_IP} -t "source .nvm/nvm.sh \
+	@ssh ubuntu@${SERVER_IP} -t "source .nvm/nvm.sh \
 		&& source .profile \
 		&& source .bashrc \
 		&& nvm use 20 \
-		&& cd ~/projects/e-kyc-dashboard  \
+		&& cd ~/projects/admin  \
 		&& git pull origin ${DEPLOY_BRANCH} \
 		&& yarn install \
 		&& yarn build \
