@@ -47,13 +47,26 @@ const pieData = {
 };
 
 const options = {
-  cutout: "60%",
+  cutout: "50%",
   plugins: {
     legend: {
-      display: false, // ✅ dùng đúng cấu trúc
+      display: false,
+    },
+    tooltip: {
+      callbacks: {
+        label: function (context) {
+          const value = context.raw;
+          const total = context.chart.data.datasets[0].data.reduce(
+            (a, b) => a + b,
+            0
+          );
+          const percentage = ((value / total) * 100).toFixed(1);
+          return `Vi phạm: ${percentage}%`;
+        },
+      },
     },
     datalabels: {
-      display: true, // ✅ bắt buộc nếu đang bị override
+      display: true,
       color: "#000",
       font: {
         weight: "bold",
@@ -77,7 +90,7 @@ const options = {
 
 function RateOfViolations() {
   return (
-    <Card>
+    <Card className="h-full">
       <MDBox>
         <MDTypography variant="h6" sx={{ mt: 2, ml: 2 }}>
           Tỷ lệ Top 10 lỗi vi phạm giao thông
@@ -86,10 +99,10 @@ function RateOfViolations() {
       <MDBox p={2}>
         <Grid container spacing={2} alignItems="center">
           {/* Cột bên trái: Chart */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <MDBox
               sx={{
-                height: 310,
+                height: 250,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -100,8 +113,8 @@ function RateOfViolations() {
           </Grid>
 
           {/* Cột bên phải: Custom legend dọc */}
-          <Grid item xs={12} md={6}>
-            <Box display="flex" flexDirection="column" gap={1}>
+          <Grid item xs={12}>
+            <Box display="flex" flexWrap="wrap" gap={1}>
               {pieData.labels.map((label, index) => (
                 <Box key={index} display="flex" alignItems="center">
                   <Box

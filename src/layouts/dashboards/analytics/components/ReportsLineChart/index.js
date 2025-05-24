@@ -63,7 +63,7 @@ function ReportsLineChart({
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   return (
-    <Card>
+    <Card className="h-full">
       <MDBox p={2}>
         <MDTypography variant="h6" textTransform="capitalize">
           {title}
@@ -77,10 +77,10 @@ function ReportsLineChart({
           {description}
         </MDTypography>
       </MDBox>
-      <MDBox pl={2} pb={2} pr={3}>
+      <MDBox pl={2} pb={2} pr={3} height="100%">
         {useMemo(
           () => (
-            <MDBox borderRadius="lg" height="19.5rem">
+            <MDBox borderRadius="lg" height="100%">
               <Line data={data} options={options} redraw />
             </MDBox>
           ),

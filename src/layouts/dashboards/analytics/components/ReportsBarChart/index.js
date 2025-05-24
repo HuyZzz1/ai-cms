@@ -61,7 +61,7 @@ function ReportsBarChart({
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   return (
-    <Card>
+    <Card className="h-full">
       <MDBox p={2}>
         <MDTypography variant="h6" textTransform="capitalize">
           {title}
@@ -75,10 +75,10 @@ function ReportsBarChart({
           {description}
         </MDTypography>
       </MDBox>
-      <MDBox pl={2} pb={2} pr={3}>
+      <MDBox pl={2} pb={2} pr={3} height="100%">
         {useMemo(
           () => (
-            <MDBox borderRadius="lg" height="18rem">
+            <MDBox borderRadius="lg" height="100%">
               <Bar data={data} options={options} redraw />
             </MDBox>
           ),

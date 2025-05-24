@@ -83,7 +83,6 @@ function ViolationOverviewChart({
       },
     ],
   },
-  height = "350px",
 }) {
   const [selectedTime, setSelectedTime] = useState("Hôm nay");
 
@@ -106,101 +105,97 @@ function ViolationOverviewChart({
 
   const { data, options } = configs(chart.labels || [], chartDatasets);
 
-  const renderChart = (
-    <MDBox py={2} pr={2} pl={2}>
-      <MDBox
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-        flexDirection={{ xs: "column", sm: "row" }}
-        gap={2}
-      >
-        <MDTypography variant="h6">{title}</MDTypography>
+  return (
+    <Card className="h-full">
+      <MDBox py={2} pr={2} pl={2}>
+        <div className="flex-1 pt-2.5">
+          <MDTypography variant="h6">{title}</MDTypography>
+        </div>
+
+        <MDBox className="flex items-center justify-end py-5">
+          <MDBox className=" flex gap-5 items-start lg:flex-col lg:w-full lg:gap-8 ">
+            {/* Time filter group */}
+            <div className="flex items-center border border-gray-400 rounded-[12px] h-[32px] overflow-hidden w-fit xs:mb-5 lg:w-full">
+              {["Hôm nay", "7 ngày qua", "30 ngày"].map((label, index, arr) => (
+                <div
+                  key={label}
+                  onClick={() => setSelectedTime(label)}
+                  className={`lg:w-full h-full px-5 flex items-center justify-center cursor-pointer text-sm ${
+                    label === selectedTime
+                      ? "bg-[#262626] text-white"
+                      : "text-black"
+                  } ${
+                    index !== arr.length - 1 ? "border-r border-r-gray-400" : ""
+                  }`}
+                >
+                  <p>{label}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Region dropdown */}
+            <FormControl
+              size="medium"
+              sx={{
+                minWidth: 220,
+                backgroundColor: "#fff",
+                borderRadius: "12px",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "12px",
+                  paddingLeft: 1,
+                  height: "32px",
+                },
+                "& .MuiInputLabel-root": {
+                  fontSize: "14px",
+                  top: "-5px",
+                },
+              }}
+              className="lg:w-full"
+            >
+              <InputLabel id="region-select-label">🌐 Chọn khu vực</InputLabel>
+              <Select
+                labelId="region-select-label"
+                label="🌐 Chọn khu vực"
+                defaultValue="hcm"
+              >
+                <MenuItem value="hcm">TP. Hồ Chí Minh</MenuItem>
+                <MenuItem value="hanoi">Hà Nội</MenuItem>
+                <MenuItem value="danang">Đà Nẵng</MenuItem>
+              </Select>
+            </FormControl>
+          </MDBox>
+        </MDBox>
 
         <MDBox
           display="flex"
-          flexDirection={{ xs: "column", sm: "row" }}
-          alignItems={{ xs: "stretch", sm: "center" }}
-          justifyContent="flex-end"
+          alignItems="center"
+          mb={1}
+          flexWrap="wrap"
           gap={2}
-          rowGap={4}
-          width="100%"
         >
-          {/* Time filter group */}
-          <div className="flex items-center border border-gray-400 rounded-[12px] h-[32px] overflow-hidden w-fit xs:mb-5">
-            {["Hôm nay", "7 ngày qua", "30 ngày"].map((label, index, arr) => (
-              <div
-                key={label}
-                onClick={() => setSelectedTime(label)}
-                className={`h-full px-5 flex items-center justify-center cursor-pointer text-sm ${
-                  label === selectedTime
-                    ? "bg-[#262626] text-white"
-                    : "text-black"
-                } ${
-                  index !== arr.length - 1 ? "border-r border-r-gray-400" : ""
-                }`}
-              >
-                <p>{label}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Region dropdown */}
-          <FormControl
-            size="medium"
-            sx={{
-              minWidth: 220,
-              backgroundColor: "#fff",
-              borderRadius: "12px",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "12px",
-                paddingLeft: 1,
-                height: "32px",
-              },
-              "& .MuiInputLabel-root": {
-                fontSize: "14px",
-                top: "-5px",
-              },
-            }}
-          >
-            <InputLabel id="region-select-label">🌐 Chọn khu vực</InputLabel>
-            <Select
-              labelId="region-select-label"
-              label="🌐 Chọn khu vực"
-              defaultValue="hcm"
-            >
-              <MenuItem value="hcm">TP. Hồ Chí Minh</MenuItem>
-              <MenuItem value="hanoi">Hà Nội</MenuItem>
-              <MenuItem value="danang">Đà Nẵng</MenuItem>
-            </Select>
-          </FormControl>
+          <MDBadgeDot color="info" size="sm" badgeContent="Vi phạm tốc độ" />
+          <MDBadgeDot
+            color="warning"
+            size="sm"
+            badgeContent="Vi phạm tín hiệu"
+          />
         </MDBox>
       </MDBox>
-
-      <MDBox display="flex" alignItems="center" mb={1} flexWrap="wrap" gap={2}>
-        <MDBadgeDot color="info" size="sm" badgeContent="Vi phạm tốc độ" />
-        <MDBadgeDot color="warning" size="sm" badgeContent="Vi phạm tín hiệu" />
-      </MDBox>
-
-      {useMemo(
-        () => (
-          <MDBox height={height}>
+      <MDBox className="h-[350px]">
+        {useMemo(
+          () => (
             <Line data={data} options={options} redraw />
-          </MDBox>
-        ),
-        [chart, height]
-      )}
-    </MDBox>
+          ),
+          [chart]
+        )}
+      </MDBox>
+    </Card>
   );
-
-  return <Card>{renderChart}</Card>;
 }
 
 ViolationOverviewChart.propTypes = {
   title: PropTypes.string,
   chart: PropTypes.objectOf(PropTypes.array),
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default ViolationOverviewChart;

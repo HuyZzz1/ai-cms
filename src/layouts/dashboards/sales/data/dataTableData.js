@@ -1,7 +1,7 @@
 import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import LinearProgress from "@mui/material/LinearProgress";
+import MDProgress from "components/MDProgress";
 
 const columns = [
   {
@@ -37,39 +37,37 @@ const columns = [
   {
     Header: "tỷ lệ xử lý",
     accessor: "processing",
-    Cell: ({ value }) => (
-      <MDBox width="100px">
-        <MDTypography
-          variant="caption"
-          color="text"
-          display="flex"
-          alignItems="center"
-          gap={1}
-          mb={0.5}
-        >
-          {value}%
-        </MDTypography>
-        <MDBox width="100%">
-          <LinearProgress
-            variant="determinate"
-            value={value}
-            sx={{
-              height: 6,
-              borderRadius: 4,
-              [`& .MuiLinearProgress-bar`]: {
-                backgroundColor:
-                  value > 80 ? "#4caf50" : value >= 60 ? "#ff9800" : "#f44336",
-              },
-            }}
-          />
+    Cell: ({ value }) => {
+      let color = "success";
+      if (value < 60) color = "error";
+      else if (value < 80) color = "warning";
+
+      return (
+        <MDBox width="100px">
+          <MDTypography
+            variant="caption"
+            color="text"
+            display="flex"
+            alignItems="center"
+            gap={1}
+            mb={0.5}
+          >
+            {value}%
+          </MDTypography>
+          <MDBox width="100%">
+            <MDBox width="8rem">
+              <MDProgress variant="gradient" value={value} color={color} />
+            </MDBox>
+          </MDBox>
         </MDBox>
-      </MDBox>
-    ),
+      );
+    },
   },
   {
     Header: "",
     accessor: "mapAction",
     width: "30px",
+    align: "center",
     Cell: () => (
       <MDBox
         sx={{

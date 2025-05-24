@@ -15,8 +15,6 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import Grid from "@mui/material/Grid";
-import Tooltip from "@mui/material/Tooltip";
-import Icon from "@mui/material/Icon";
 
 // Material Dashboard 3 PRO React components
 import MDBox from "components/MDBox";
@@ -25,7 +23,6 @@ import MDTypography from "components/MDTypography";
 // Material Dashboard 3 PRO React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import BookingCard from "examples/Cards/BookingCard";
 
@@ -62,32 +59,6 @@ const Analytics = () => {
   const [selectedTime, setSelectedTime] = useState("Ngày");
   const { sales, tasks } = reportsLineChartData;
 
-  // Action buttons for the BookingCard
-  const actionButtons = (
-    <>
-      <Tooltip title="Refresh" placement="bottom">
-        <MDTypography
-          variant="body1"
-          color="primary"
-          lineHeight={1}
-          sx={{ cursor: "pointer", mx: 3 }}
-        >
-          <Icon color="inherit">refresh</Icon>
-        </MDTypography>
-      </Tooltip>
-      <Tooltip title="Edit" placement="bottom">
-        <MDTypography
-          variant="body1"
-          color="info"
-          lineHeight={1}
-          sx={{ cursor: "pointer", mx: 3 }}
-        >
-          <Icon color="inherit">edit</Icon>
-        </MDTypography>
-      </Tooltip>
-    </>
-  );
-
   return (
     <DashboardLayout>
       <DashboardNavbar
@@ -95,25 +66,27 @@ const Analytics = () => {
         breadcrumbRoute={["dashboards", "analytics"]}
       />
       <MDBox pb={3}>
-        <MDBox mb={5} ml={1}>
+        <MDBox mb={5} ml={1} height="100%">
           <MDTypography variant="h4" fontWeight="bold">
             Tổng quan giao thông
           </MDTypography>
           <MDBox
+            height="100%"
             mt={2}
             display="flex"
             flexWrap="wrap"
             alignItems="center"
             justifyContent="end"
             gap={4}
+            width="100%"
           >
             {/* Bộ lọc thời gian */}
-            <div className="flex items-center border border-gray-400 rounded-[12px] h-[32px] overflow-hidden">
+            <div className="flex items-center border border-gray-400 rounded-[12px] h-[32px] overflow-hidden md:!w-full">
               {["Ngày", "Tuần", "Tháng"].map((label, index, arr) => (
                 <div
                   key={label}
                   onClick={() => setSelectedTime(label)}
-                  className={`h-full px-5 flex items-center justify-center cursor-pointer text-sm ${
+                  className={`h-full flex-1 px-5 flex items-center justify-center cursor-pointer text-sm ${
                     label === selectedTime
                       ? "bg-[#262626] text-white"
                       : "text-black"
@@ -143,12 +116,14 @@ const Analytics = () => {
                   top: "-5px",
                 },
               }}
+              className="md:!w-full"
             >
               <InputLabel id="region-select-label">🌐 Chọn khu vực</InputLabel>
               <Select
                 labelId="region-select-label"
                 label="🌐 Chọn khu vực"
                 defaultValue="hcm"
+                className="w-full"
               >
                 <MenuItem value="hcm">TP. Hồ Chí Minh</MenuItem>
                 <MenuItem value="hanoi">Hà Nội</MenuItem>
@@ -319,7 +294,7 @@ const Analytics = () => {
                     }}
                   >
                     <iframe
-                      src="https://www.youtube.com/embed/MMmXs8A1SOk?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1"
+                      src="https://www.youtube.com/embed/ByED80IKdIU?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1"
                       title="YouTube Live Stream"
                       allow="autoplay"
                       allowFullScreen={false}

@@ -15,7 +15,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 function Sales() {
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      <DashboardNavbar breadcrumbTitle="Tổng quan vi phạm" />
       <MDBox py={3}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
@@ -62,10 +62,10 @@ function Sales() {
         </MDBox>
         <MDBox mb={3}>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} lg={8}>
+            <Grid item xs={12} lg={8}>
               <LineChart title=" Phân tích Vi Phạm theo Thời gian" />
             </Grid>
-            <Grid item xs={12} sm={6} lg={4}>
+            <Grid item xs={12} lg={4}>
               <RateOfViolations />
             </Grid>
           </Grid>
