@@ -20,6 +20,11 @@ module.exports = {
         sm: { max: "576px" },
         xs: { max: "425px" },
       },
+
+      colors: {
+        chart1: "hsl(var(--chart-1) / <alpha-value>)",
+        chart2: "hsl(var(--chart-2) / <alpha-value>)",
+      },
     },
   },
   plugins: [],

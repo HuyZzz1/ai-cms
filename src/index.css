@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --chart-1: 221.2 83.2% 53.3%; /* #142D65 */
+    --chart-2: 212 70% 50%; /* #2C496B */
+  }
+}

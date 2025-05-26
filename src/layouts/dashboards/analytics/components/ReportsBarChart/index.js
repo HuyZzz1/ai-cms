@@ -51,10 +51,10 @@ function ReportsBarChart({
           {description}
         </MDTypography>
       </MDBox>
-      <MDBox pl={2} pb={2} pr={3} height="100%">
+      <MDBox pl={2} pb={2} pr={3}>
         {useMemo(
           () => (
-            <MDBox borderRadius="lg" height="100%">
+            <MDBox borderRadius="lg" height="200px">
               <Bar data={data} options={options} redraw />
             </MDBox>
           ),

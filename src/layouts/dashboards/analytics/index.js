@@ -1,137 +1,40 @@
-/**
-=========================================================
-* Material Dashboard 3 PRO React - v2.4.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
 import Grid from "@mui/material/Grid";
-
-// Material Dashboard 3 PRO React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
-// Material Dashboard 3 PRO React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-import BookingCard from "examples/Cards/BookingCard";
-
-// Anaytics dashboard components
 import RateOfViolations from "layouts/dashboards/analytics/components/RateOfViolations";
 import ReportsBarChart from "layouts/dashboards/analytics/components/ReportsBarChart";
 import ReportsLineChart from "layouts/dashboards/analytics/components/ReportsLineChart";
 import TrafficOverview from "layouts/dashboards/analytics/components/TrafficOverview";
-
-// Data
 import reportsBarChartData from "layouts/dashboards/analytics/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboards/analytics/data/reportsLineChartData";
-
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import Card from "@mui/material/Card";
-
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { useState } from "react";
-
-// @mui material components
 import Divider from "@mui/material/Divider";
-
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import PlaceIcon from "@mui/icons-material/Place";
-import MDButton from "components/MDButton";
-
+import { useNavigate } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
+import FilterToggleBox from "./components/FilterToggleBox";
 
 const Analytics = () => {
-  const [selectedTime, setSelectedTime] = useState("Ngày");
-  const { sales, tasks } = reportsLineChartData;
+  const { sales } = reportsLineChartData;
+  const navigate = useNavigate();
 
   return (
     <DashboardLayout>
       <DashboardNavbar
-        breadcrumbTitle="Tổng quan giao thông"
-        breadcrumbRoute={["dashboards", "analytics"]}
+        breadcrumbRoute={["Dashboard", "Tổng quan giao thông"]}
       />
-      <MDBox pb={3}>
-        <MDBox mb={5} ml={1} height="100%">
-          <MDTypography variant="h4" fontWeight="bold">
-            Tổng quan giao thông
-          </MDTypography>
-          <MDBox
-            height="100%"
-            mt={2}
-            display="flex"
-            flexWrap="wrap"
-            alignItems="center"
-            justifyContent="end"
-            gap={4}
-            width="100%"
-          >
-            {/* Bộ lọc thời gian */}
-            <div className="flex items-center border border-gray-400 rounded-[12px] h-[32px] overflow-hidden md:!w-full">
-              {["Ngày", "Tuần", "Tháng"].map((label, index, arr) => (
-                <div
-                  key={label}
-                  onClick={() => setSelectedTime(label)}
-                  className={`h-full flex-1 px-5 flex items-center justify-center cursor-pointer text-sm ${
-                    label === selectedTime
-                      ? "bg-[#262626] text-white"
-                      : "text-black"
-                  } ${
-                    index !== arr.length - 1 ? "border-r border-r-gray-400" : ""
-                  }`}
-                >
-                  <p>{label}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Dropdown chọn khu vực */}
-            <FormControl
-              size="medium"
-              sx={{
-                minWidth: 220,
-                backgroundColor: "#fff",
-                borderRadius: "12px",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "12px",
-                  paddingLeft: 1,
-                  height: "32px",
-                },
-                "& .MuiInputLabel-root": {
-                  fontSize: "14px",
-                  top: "-5px",
-                },
-              }}
-              className="md:!w-full"
-            >
-              <InputLabel id="region-select-label">🌐 Chọn khu vực</InputLabel>
-              <Select
-                labelId="region-select-label"
-                label="🌐 Chọn khu vực"
-                defaultValue="hcm"
-                className="w-full"
-              >
-                <MenuItem value="hcm">TP. Hồ Chí Minh</MenuItem>
-                <MenuItem value="hanoi">Hà Nội</MenuItem>
-                <MenuItem value="danang">Đà Nẵng</MenuItem>
-              </Select>
-            </FormControl>
-          </MDBox>
-        </MDBox>
+      <MDBox py={3}>
+        <FilterToggleBox
+          onFilter={(data) => {
+            console.log("Filter:", data);
+          }}
+        />
 
         <MDBox>
           <Grid
@@ -209,8 +112,11 @@ const Analytics = () => {
         </MDBox>
         <MDBox pb={3}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox mt={3}>
+            <Grid item xs={12} md={6} lg={3} className="cursor-pointer">
+              <MDBox
+                mt={3}
+                onClick={() => navigate("/dashboards/surveillance")}
+              >
                 <Card sx=".card-header">
                   <Box
                     sx={{
@@ -239,32 +145,17 @@ const Analytics = () => {
                   <Box textAlign="center" p={2}>
                     <Typography variant="h6" fontWeight="bold">
                       <LocationOnIcon fontSize="small" color="error" />
-                      TP. Hà Nội
+                      TP. Hồ Chí Minh
                     </Typography>
 
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      className="pt-2"
-                    >
+                    <p className="pt-2 font-medium text-sm">
                       <VideocamIcon fontSize="small" /> Camera hoạt động:
                       120/150
-                    </Typography>
-
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      className="pb-5"
-                    >
+                    </p>
+                    <p className="pt-1 font-medium text-sm">
                       <WarningAmberIcon fontSize="small" color="warning" /> Vi
                       phạm hôm nay: 530
-                    </Typography>
-
-                    <MDButton variant="gradient" color="info">
-                      <Typography variant="button" fontWeight="medium">
-                        Xem chi tiết
-                      </Typography>
-                    </MDButton>
+                    </p>
                   </Box>
                   <Divider />
                   <Box
@@ -274,21 +165,22 @@ const Analytics = () => {
                     px={5}
                     pb={1}
                   >
-                    <Typography variant="body2" color="text.secondary">
-                      Đường Bà Triệu
-                    </Typography>
+                    <p className="font-medium text-[16px]">Đường Hàm Nghi</p>
                     <PlaceIcon fontSize="small" />
                   </Box>
                 </Card>
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox mt={3}>
+            <Grid item xs={12} md={6} lg={3} className="cursor-pointer">
+              <MDBox
+                mt={3}
+                onClick={() => navigate("/dashboards/surveillance")}
+              >
                 <Card sx=".card-header">
                   <Box
                     sx={{
                       position: "relative",
-                      paddingTop: "56.25%", // tỷ lệ 16:9
+                      paddingTop: "56.25%",
                       borderRadius: 2,
                       overflow: "hidden",
                     }}
@@ -308,35 +200,21 @@ const Analytics = () => {
                       }}
                     />
                   </Box>
+
                   <Box textAlign="center" p={2}>
                     <Typography variant="h6" fontWeight="bold">
                       <LocationOnIcon fontSize="small" color="error" />
                       TP. Hồ Chí Minh
                     </Typography>
 
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      className="pt-2"
-                    >
+                    <p className="pt-2 font-medium text-sm">
                       <VideocamIcon fontSize="small" /> Camera hoạt động:
-                      150/150
-                    </Typography>
-
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      className="pb-5"
-                    >
+                      120/150
+                    </p>
+                    <p className="pt-1 font-medium text-sm">
                       <WarningAmberIcon fontSize="small" color="warning" /> Vi
-                      phạm hôm nay: 1000
-                    </Typography>
-
-                    <MDButton variant="gradient" color="info">
-                      <Typography variant="button" fontWeight="medium">
-                        Xem chi tiết
-                      </Typography>
-                    </MDButton>
+                      phạm hôm nay: 530
+                    </p>
                   </Box>
                   <Divider />
                   <Box
@@ -346,21 +224,22 @@ const Analytics = () => {
                     px={5}
                     pb={1}
                   >
-                    <Typography variant="body2" color="text.secondary">
-                      Đường Lũy Bán Bích
-                    </Typography>
+                    <p className="font-medium text-[16px]">Đường Bạch Đằng</p>
                     <PlaceIcon fontSize="small" />
                   </Box>
                 </Card>
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox mt={3}>
+            <Grid item xs={12} md={6} lg={3} className="cursor-pointer">
+              <MDBox
+                mt={3}
+                onClick={() => navigate("/dashboards/surveillance")}
+              >
                 <Card sx=".card-header">
                   <Box
                     sx={{
                       position: "relative",
-                      paddingTop: "56.25%", // tỷ lệ 16:9
+                      paddingTop: "56.25%",
                       borderRadius: 2,
                       overflow: "hidden",
                     }}
@@ -380,34 +259,21 @@ const Analytics = () => {
                       }}
                     />
                   </Box>
+
                   <Box textAlign="center" p={2}>
                     <Typography variant="h6" fontWeight="bold">
                       <LocationOnIcon fontSize="small" color="error" />
-                      TP. Đà Nẵng
+                      TP. Hồ Chí Minh
                     </Typography>
 
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      className="pt-2"
-                    >
-                      <VideocamIcon fontSize="small" /> Camera hoạt động: 50/150
-                    </Typography>
-
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      className="pb-5"
-                    >
+                    <p className="pt-2 font-medium text-sm">
+                      <VideocamIcon fontSize="small" /> Camera hoạt động:
+                      120/150
+                    </p>
+                    <p className="pt-1 font-medium text-sm">
                       <WarningAmberIcon fontSize="small" color="warning" /> Vi
-                      phạm hôm nay: 30
-                    </Typography>
-
-                    <MDButton variant="gradient" color="info">
-                      <Typography variant="button" fontWeight="medium">
-                        Xem chi tiết
-                      </Typography>
-                    </MDButton>
+                      phạm hôm nay: 530
+                    </p>
                   </Box>
                   <Divider />
                   <Box
@@ -417,21 +283,22 @@ const Analytics = () => {
                     px={5}
                     pb={1}
                   >
-                    <Typography variant="body2" color="text.secondary">
-                      Đường Lũy Bán Bích
-                    </Typography>
+                    <p className="font-medium text-[16px]">Đường 3/2</p>
                     <PlaceIcon fontSize="small" />
                   </Box>
                 </Card>
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox mt={3}>
+            <Grid item xs={12} md={6} lg={3} className="cursor-pointer">
+              <MDBox
+                mt={3}
+                onClick={() => navigate("/dashboards/surveillance")}
+              >
                 <Card sx=".card-header">
                   <Box
                     sx={{
                       position: "relative",
-                      paddingTop: "56.25%", // tỷ lệ 16:9
+                      paddingTop: "56.25%",
                       borderRadius: 2,
                       overflow: "hidden",
                     }}
@@ -451,34 +318,21 @@ const Analytics = () => {
                       }}
                     />
                   </Box>
+
                   <Box textAlign="center" p={2}>
                     <Typography variant="h6" fontWeight="bold">
                       <LocationOnIcon fontSize="small" color="error" />
-                      TP. Đà Nẵng
+                      TP. Hồ Chí Minh
                     </Typography>
 
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      className="pt-2"
-                    >
-                      <VideocamIcon fontSize="small" /> Camera hoạt động: 50/150
-                    </Typography>
-
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      className="pb-5"
-                    >
+                    <p className="pt-2 font-medium text-sm">
+                      <VideocamIcon fontSize="small" /> Camera hoạt động:
+                      120/150
+                    </p>
+                    <p className="pt-1 font-medium text-sm">
                       <WarningAmberIcon fontSize="small" color="warning" /> Vi
-                      phạm hôm nay: 30
-                    </Typography>
-
-                    <MDButton variant="gradient" color="info">
-                      <Typography variant="button" fontWeight="medium">
-                        Xem chi tiết
-                      </Typography>
-                    </MDButton>
+                      phạm hôm nay: 530
+                    </p>
                   </Box>
                   <Divider />
                   <Box
@@ -488,9 +342,7 @@ const Analytics = () => {
                     px={5}
                     pb={1}
                   >
-                    <Typography variant="body2" color="text.secondary">
-                      Đường Lũy Bán Bích
-                    </Typography>
+                    <p className="font-medium text-[16px]">Đường CMT 8</p>
                     <PlaceIcon fontSize="small" />
                   </Box>
                 </Card>

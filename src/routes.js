@@ -61,8 +61,7 @@ import EditProduct from "layouts/ecommerce/products/edit-product";
 import ProductPage from "layouts/ecommerce/products/product-page";
 import OrderList from "layouts/ecommerce/orders/order-list";
 import OrderDetails from "layouts/ecommerce/orders/order-details";
-import SignInBasic from "layouts/authentication/sign-in/basic";
-import SignInCover from "layouts/authentication/sign-in/cover";
+import SignIn from "layouts/authentication/sign-in";
 import SignInIllustration from "layouts/authentication/sign-in/illustration";
 import SignUpCover from "layouts/authentication/sign-up/cover";
 import ResetCover from "layouts/authentication/reset-password/cover";
@@ -98,8 +97,8 @@ const routes = [
       {
         name: "Logout",
         key: "logout",
-        route: "/authentication/sign-in/basic",
-        component: <SignInBasic />,
+        route: "/authentication/sign-in",
+        component: <SignIn />,
       },
     ],
   },
@@ -321,13 +320,13 @@ const routes = [
   //         {
   //           name: "Basic",
   //           key: "basic",
-  //           route: "/authentication/sign-in/basic",
+  //           route: "/authentication/sign-in",
   //           component: <SignInBasic />,
   //         },
   //         {
   //           name: "Cover",
   //           key: "cover",
-  //           route: "/authentication/sign-in/cover",
+  //           route: "/authentication/sign-in",
   //           component: <SignInCover />,
   //         },
   //         {

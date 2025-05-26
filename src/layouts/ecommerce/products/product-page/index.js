@@ -10,7 +10,7 @@ import dataTableData from "layouts/ecommerce/products/product-page/data/dataTabl
 function ProductPage() {
   return (
     <DashboardLayout>
-      <DashboardNavbar breadcrumbTitle="Giám sát Camera" />
+      <DashboardNavbar breadcrumbRoute={["Dashboard", "Giám sát Camera"]} />
       <MDBox py={3}>
         <Card sx={{ overflow: "visible" }}>
           <MDBox p={3}>

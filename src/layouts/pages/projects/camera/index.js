@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -12,6 +12,9 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import FilterToggleBox from "./components/FilterToggleBox";
+import MDButton from "components/MDButton";
+import { Grid, Icon, Menu } from "@mui/material";
 
 const initialData = [
   {
@@ -62,123 +65,51 @@ const initialData = [
     img: "https://www.youtube.com/embed/ByED80IKdIU?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1",
     time: "1 ngày trước",
   },
+  {
+    title: "CAM_0982",
+    status: "Tốt",
+    img: "https://www.youtube.com/embed/ByED80IKdIU?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1",
+    time: "1 ngày trước",
+  },
 ];
 
 function CameraManager() {
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar breadcrumbRoute={["Quản lí", "Quản lí Camera"]} />
-
-      <div className="flex flex-col gap-2 mt-10 bg-white p-5 rounded-xl">
-        <MDTypography variant="h6" fontWeight="medium" className="pb-2">
-          Bộ lọc
-        </MDTypography>
-        <div className="flex items-center gap-5 md:flex-col">
-          {/* Tìm kiếm */}
-          <MDInput label="Tìm kiếm theo tên" fullWidth />
-
-          {/* Khu vực */}
-          <FormControl size="small" fullWidth>
-            <Autocomplete
-              options={[
-                { label: "TP. Hồ Chí Minh", value: "hcm" },
-                { label: "Hà Nội", value: "hanoi" },
-                { label: "Đà Nẵng", value: "danang" },
-              ]}
-              size="small"
-              fullWidth
-              clearOnEscape
-              isOptionEqualToValue={(opt, val) => opt?.value === val?.value}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "8px",
-                  height: "44px",
-                  fontSize: "14px",
-                  paddingRight: "10px",
-                },
-                "& .MuiInputLabel-root": {
-                  fontSize: "14px",
-                },
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="🌐 Chọn khu vực" />
-              )}
-            />
-          </FormControl>
-
-          <FormControl size="small" fullWidth>
-            <Autocomplete
-              options={[
-                { label: "Tốt", value: "active" },
-                { label: "Không hoạt động", value: "unActive" },
-              ]}
-              size="small"
-              fullWidth
-              clearOnEscape
-              isOptionEqualToValue={(opt, val) => opt?.value === val?.value}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "8px",
-                  height: "44px",
-                  fontSize: "14px",
-                  paddingRight: "10px",
-                },
-                "& .MuiInputLabel-root": {
-                  fontSize: "14px",
-                },
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="🌐 Chọn trạng thái" />
-              )}
-            />
-          </FormControl>
-
-          <FormControl size="small" fullWidth>
-            <Autocomplete
-              options={[
-                { label: "Loại 1", value: "hcm" },
-                { label: "Loại 2", value: "hanoi" },
-                { label: "Loại 3", value: "danang" },
-              ]}
-              size="small"
-              fullWidth
-              clearOnEscape
-              isOptionEqualToValue={(opt, val) => opt?.value === val?.value}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "8px",
-                  height: "44px",
-                  fontSize: "14px",
-                  paddingRight: "10px",
-                },
-                "& .MuiInputLabel-root": {
-                  fontSize: "14px",
-                },
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="🌐 Chọn loại" />
-              )}
-            />
-          </FormControl>
+      <div
+        className={`flex items-center justify-end gap-10  w-full pt-5
+        }`}
+      >
+        <div
+          onClick={() => setOpen(!open)}
+          className="cursor-pointer flex items-center gap-2"
+        >
+          <p className="text-[16px] font-bold">Bộ lọc</p>
+          <Icon color="info" fontSize="medium">
+            filter_alt
+          </Icon>
         </div>
+
+        <MDButton color="info">Thêm mới</MDButton>
       </div>
-
-      <MDBox my={3}>
-        <div className="flex items-center justify-end pb-5 ">
-          <div className="flex items-center justify-center rounded-xl text-white bg-[#262626] p-2 cursor-pointer min-w-[200px]">
-            <MDTypography
-              variant="h6"
-              fontWeight="medium"
-              className="!text-white"
-            >
-              Thêm mới
-            </MDTypography>
-          </div>
-        </div>
-        <div className="grid gap-5 grid-cols-1 md-min:grid-cols-2 lg-min:grid-cols-3 xl-min:grid-cols-4">
-          {initialData.map((item, index) => (
+      <FilterToggleBox open={open} setOpen={setOpen} />
+      <Grid container spacing={3}>
+        {initialData.map((item, index) => (
+          <Grid item xs={12} md={6} xl={4}>
             <div
-              className="flex flex-col gap-4 bg-white rounded-xl p-3"
+              className="flex flex-col gap-4 bg-white rounded-xl p-3 w-full"
               style={{
                 boxShadow: "0rem 0.0625rem 0.125rem 0rem rgba(0, 0, 0, 0.05)",
               }}
@@ -191,66 +122,71 @@ function CameraManager() {
                   allow="autoplay"
                   allowFullScreen
                   width="100%"
-                  height={200}
+                  height={300}
                   className="rounded-xl"
                 />
               </div>
-              <div className="flex flex-col gap-2">
-                <MDTypography
-                  variant="h5"
-                  fontWeight="bold"
-                  className="text-center"
-                >
-                  {item?.title}
-                </MDTypography>
-                <div className="flex gap-2">
-                  <SiStatuspal size={24} className="text-green-500 mt-[-3px]" />
-                  <MDTypography variant="h6" fontWeight="medium">
+              <div className="flex items-center">
+                <div className="flex flex-col gap-2 flex-1">
+                  <MDTypography
+                    variant="button"
+                    fontWeight="regular"
+                    color="text"
+                    textTransform="capitalize"
+                  >
                     Trạng thái: {item?.status}
                   </MDTypography>
-                </div>
-                <div className="flex gap-2">
-                  <FaRegCalendarCheck size={20} className="text-blue-500" />
-                  <MDTypography variant="h6" fontWeight="medium">
-                    Thời gian cập nhật gần nhất: {item?.time}
+                  <MDTypography variant="h5" textTransform="capitalize">
+                    {item?.title}
                   </MDTypography>
                 </div>
-              </div>
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-2 lg:flex-col lg:items-start">
-                  <div className="flex flex-1 items-center justify-center rounded-xl text-white bg-blue-500 p-2 cursor-pointer lg:w-full">
-                    <MDTypography
-                      variant="h6"
-                      fontWeight="medium"
-                      className="!text-white"
+                <div>
+                  <>
+                    <Icon
+                      fontSize="default"
+                      color="secondary"
+                      sx={{ cursor: "pointer", fontWeight: "bold" }}
+                      onClick={handleMenuOpen}
                     >
-                      Chỉnh sửa
-                    </MDTypography>
-                  </div>
-                  <div className="flex flex-1 items-center justify-center rounded-xl text-white bg-yellow-500 p-2 cursor-pointer lg:w-full">
-                    <MDTypography
-                      variant="h6"
-                      fontWeight="medium"
-                      className="!text-white"
+                      more_vert
+                    </Icon>
+
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "left", // Gắn bên trái icon
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right", // Hiển thị lệch sang trái
+                      }}
+                      PaperProps={{
+                        elevation: 4,
+                        sx: {
+                          mt: 1,
+                          borderRadius: "8px",
+                          minWidth: 180,
+                          boxShadow:
+                            "0rem 0.0625rem 0.125rem 0rem rgba(0, 0, 0, 0.05)",
+                        },
+                      }}
                     >
-                      Lên lịch bảo trì
-                    </MDTypography>
-                  </div>
-                </div>
-                <div className="flex flex-1 items-center justify-center rounded-xl text-white bg-red-400 p-2 cursor-pointer">
-                  <MDTypography
-                    variant="h6"
-                    fontWeight="medium"
-                    className="!text-white"
-                  >
-                    Xóa
-                  </MDTypography>
+                      <MenuItem onClick={handleMenuClose}>Chỉnh sửa</MenuItem>
+                      <MenuItem onClick={handleMenuClose}>
+                        Lên lịch bảo trì
+                      </MenuItem>
+                      <MenuItem onClick={handleMenuClose}>Xóa</MenuItem>
+                    </Menu>
+                  </>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </MDBox>
+          </Grid>
+        ))}
+      </Grid>
     </DashboardLayout>
   );
 }

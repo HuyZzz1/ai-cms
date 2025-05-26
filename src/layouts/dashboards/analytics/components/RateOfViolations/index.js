@@ -4,69 +4,66 @@ import MDBox from "components/MDBox";
 import Box from "@mui/material/Box";
 
 import MDTypography from "components/MDTypography";
-
 import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels";
 
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
+const rawLabels = [
+  "Tốc độ vượt quy định",
+  "Vượt đèn đỏ",
+  "Đi sai làn đường",
+  "Dừng/đỗ sai quy định",
+  "Khác",
+];
 
-// Dữ liệu Top 10 lỗi vi phạm giao thông
+const rawData = [400, 200, 150, 100, 50];
+const rawColors = ["#6CE4E8", "#42B8D5", "#2D8CBA", "#506E9A", "#635A92"];
+
+// 🔍 Lọc chỉ giữ mục có giá trị > 0
+const filtered = rawData
+  .map((value, index) => ({
+    label: rawLabels[index],
+    value,
+    color: rawColors[index],
+  }))
+  .filter((item) => item.value > 0);
+
+// ✅ Tách lại thành mảng cho chart
 const pieData = {
-  labels: [
-    "Không đội mũ bảo hiểm",
-    "Vượt đèn đỏ",
-    "Đi sai làn đường",
-    "Không có giấy tờ xe",
-    "Không thắt dây an toàn",
-    "Chở quá số người quy định",
-    "Đi ngược chiều",
-    "Gọi điện khi lái xe",
-    "Uống rượu bia khi lái xe",
-    "Chạy quá tốc độ",
-  ],
+  labels: filtered.map((item) => item.label),
   datasets: [
     {
       label: "Lỗi vi phạm",
-      data: [200, 180, 150, 120, 100, 90, 85, 80, 75, 70],
-      backgroundColor: [
-        "#e53935",
-        "#fb8c00",
-        "#fdd835",
-        "#43a047",
-        "#1e88e5",
-        "#8e24aa",
-        "#6d4c41",
-        "#00acc1",
-        "#c2185b",
-        "#3949ab",
-      ],
+      data: filtered.map((item) => item.value),
+      backgroundColor: filtered.map((item) => item.color),
       borderWidth: 1,
     },
   ],
+};
+
+const totalViolations = rawData.reduce((a, b) => a + b, 0);
+
+const centerTextPlugin = {
+  id: "centerText",
+  beforeDraw: (chart) => {
+    const { width, height, ctx } = chart;
+    ctx.save();
+    const text = `Tổng: ${totalViolations}`;
+    ctx.font = "bold 16px sans-serif";
+    ctx.fillStyle = "#000";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, width / 2, height / 2);
+    ctx.restore();
+  },
 };
 
 const options = {
   cutout: "50%",
   plugins: {
     legend: {
-      display: false,
-    },
-    tooltip: {
-      callbacks: {
-        label: function (context) {
-          const value = context.raw;
-          const total = context.chart.data.datasets[0].data.reduce(
-            (a, b) => a + b,
-            0
-          );
-          const percentage = ((value / total) * 100).toFixed(1);
-          return `Vi phạm: ${percentage}%`;
-        },
-      },
+      display: false, // ✅ dùng đúng cấu trúc
     },
     datalabels: {
-      display: true,
+      display: true, // ✅ bắt buộc nếu đang bị override
       color: "#000",
       font: {
         weight: "bold",
@@ -91,49 +88,22 @@ const options = {
 function RateOfViolations() {
   return (
     <Card className="h-full">
-      <MDBox>
+      <MDBox className="pt-2.5">
         <MDTypography variant="h6" sx={{ mt: 2, ml: 2 }}>
-          Tỷ lệ Top 10 lỗi vi phạm giao thông
+          Tỉ lệ Loại Vi Phạm
         </MDTypography>
       </MDBox>
-      <MDBox p={2}>
-        <Grid container spacing={2} alignItems="center">
-          {/* Cột bên trái: Chart */}
-          <Grid item xs={12}>
-            <MDBox
-              sx={{
-                height: 250,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Doughnut data={pieData} options={options} />
-            </MDBox>
-          </Grid>
 
-          {/* Cột bên phải: Custom legend dọc */}
-          <Grid item xs={12}>
-            <Box display="flex" flexWrap="wrap" gap={1}>
-              {pieData.labels.map((label, index) => (
-                <Box key={index} display="flex" alignItems="center">
-                  <Box
-                    sx={{
-                      width: 14,
-                      height: 14,
-                      backgroundColor:
-                        pieData.datasets[0].backgroundColor[index],
-                      borderRadius: "4px",
-                      mr: 1,
-                    }}
-                  />
-                  <p className="text-sm font-medium">{label}</p>
-                </Box>
-              ))}
-            </Box>
-          </Grid>
-        </Grid>
-      </MDBox>
+      <div className="flex flex-col gap-5 justify-center p-5 flex-1">
+        <MDBox className="flex items-center justify-center h-[200px] w-full">
+          <Doughnut
+            data={pieData}
+            options={options}
+            plugins={[centerTextPlugin]}
+            className="w-full"
+          />
+        </MDBox>
+      </div>
     </Card>
   );
 }

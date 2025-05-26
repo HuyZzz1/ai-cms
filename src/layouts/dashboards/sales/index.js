@@ -15,7 +15,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 function Sales() {
   return (
     <DashboardLayout>
-      <DashboardNavbar breadcrumbTitle="Tổng quan vi phạm" />
+      <DashboardNavbar breadcrumbRoute={["Dashboard", "Tổng quan vi phạm"]} />
       <MDBox py={3}>
         <MDBox mb={3}>
           <Grid container spacing={3}>

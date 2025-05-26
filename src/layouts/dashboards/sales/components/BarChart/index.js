@@ -32,32 +32,7 @@ const chart = {
         120, 110, 115, 100, 105, 130, 500, 600, 550, 200, 180, 190, 160, 170,
         180, 220, 700, 650, 620, 300, 280, 290, 310, 320,
       ],
-      backgroundColor: [
-        "#fde0c5",
-        "#fddbb9",
-        "#fcd6ad",
-        "#fbd1a1",
-        "#fbcc95",
-        "#fac789",
-        "#fabf7a",
-        "#f8b15f",
-        "#f6a344",
-        "#f3942a",
-        "#f18610",
-        "#ec7808",
-        "#e96a06",
-        "#e65c05",
-        "#e34e04",
-        "#e04003",
-        "#dd3202",
-        "#da2401",
-        "#d71600",
-        "#c51300",
-        "#b21100",
-        "#a00f00",
-        "#8d0d00",
-        "#7a0b00",
-      ],
+      backgroundColor: Array(24).fill("#75A3EF"),
       borderRadius: 4,
       borderWidth: 0,
       maxBarThickness: 35,
@@ -119,7 +94,7 @@ function HorizontalBarChart({
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
-      {title || description ? (
+      {(title || description) && (
         <MDBox display="flex" px={description ? 1 : 0} pt={description ? 1 : 0}>
           {icon.component && (
             <MDBox
@@ -148,7 +123,7 @@ function HorizontalBarChart({
             </MDBox>
           </MDBox>
         </MDBox>
-      ) : null}
+      )}
       {useMemo(
         () => (
           <MDBox height={height}>

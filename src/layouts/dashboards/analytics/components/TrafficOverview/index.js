@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import MDTypography from "components/MDTypography";
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import DataTable from "examples/Tables/DataTable";
 
 const mockData = [
   {
@@ -47,110 +48,120 @@ const mockData = [
     value: "27,500",
     bounce: "10.1%",
   },
+  {
+    province: "Bình Dương",
+    lat: 11.3254,
+    lng: 106.477,
+    sales: 70,
+    value: "25,000",
+    bounce: "13.3%",
+  },
+  {
+    province: "Bắc Ninh",
+    lat: 21.186,
+    lng: 106.0763,
+    sales: 65,
+    value: "22,000",
+    bounce: "10.8%",
+  },
+  {
+    province: "Thừa Thiên Huế",
+    lat: 16.4637,
+    lng: 107.5909,
+    sales: 50,
+    value: "17,000",
+    bounce: "8.9%",
+  },
+  {
+    province: "Nghệ An",
+    lat: 19.2342,
+    lng: 104.92,
+    sales: 45,
+    value: "15,500",
+    bounce: "11.2%",
+  },
+  {
+    province: "Lâm Đồng",
+    lat: 11.9416,
+    lng: 108.4383,
+    sales: 40,
+    value: "13,600",
+    bounce: "7.6%",
+  },
 ];
+
+const columns = [
+  {
+    Header: "Tổng quan giao thông",
+    accessor: "province",
+    Cell: ({ value }) => (
+      <MDTypography variant="medium" fontWeight="medium">
+        {value}
+      </MDTypography>
+    ),
+  },
+  {
+    Header: "Vi phạm hôm nay",
+    accessor: "sales",
+    Cell: ({ value }) => (
+      <MDTypography variant="medium" color="text">
+        {value}
+      </MDTypography>
+    ),
+    align: "center",
+  },
+  {
+    Header: "Giá trị phạt",
+    accessor: "value",
+    Cell: ({ value }) => (
+      <MDTypography variant="medium" color="text">
+        {value}
+      </MDTypography>
+    ),
+    align: "center",
+  },
+  {
+    Header: "Tỉ lệ",
+    accessor: "bounce",
+    Cell: ({ value }) => (
+      <MDTypography variant="medium" color="text">
+        {value}
+      </MDTypography>
+    ),
+    align: "center",
+  },
+];
+
+const rows = mockData.map((item) => ({
+  province: item.province,
+  sales: item.sales,
+  value: item.value,
+  bounce: item.bounce,
+}));
 
 function TrafficOverview() {
   return (
     <Card sx={{ p: 3 }}>
-      <MDTypography variant="h5" fontWeight="bold">
+      <MDTypography variant="h6" fontWeight="bold">
         Heatmap mật độ lưu thông
       </MDTypography>
 
-      <Grid container spacing={3} mt={2}>
-        <Grid item xs={12} md={12} lg={5}>
+      <Grid container spacing={3} className="pt-5">
+        <Grid item xs={12} md={12} lg={6}>
           <Box sx={{ overflowX: "auto" }}>
-            <Grid container sx={{ minWidth: "500px" }}>
-              {/* Header */}
-              <Grid item xs={4}>
-                <MDTypography variant="h6" fontWeight="bold">
-                  Tổng quan giao thông
-                </MDTypography>
-              </Grid>
-              <Grid
-                item
-                xs={3}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <MDTypography variant="h6" fontWeight="bold">
-                  Vi phạm hôm nay
-                </MDTypography>
-              </Grid>
-              <Grid
-                item
-                xs={3}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <MDTypography variant="h6" fontWeight="bold">
-                  Giá trị phạt
-                </MDTypography>
-              </Grid>
-              <Grid
-                item
-                xs={2}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <MDTypography variant="h6" fontWeight="bold">
-                  Tỉ lệ
-                </MDTypography>
-              </Grid>
-
-              {/* Dữ liệu */}
-              {mockData.map((item, index) => (
-                <React.Fragment key={index}>
-                  <Grid
-                    item
-                    xs={4}
-                    mt={1}
-                    sx={{ borderBottom: "1px solid #e0e0e0", py: 1 }}
-                  >
-                    <MDTypography variant="body2">{item.province}</MDTypography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={3}
-                    mt={1}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{ borderBottom: "1px solid #e0e0e0", py: 1 }}
-                  >
-                    <MDTypography variant="body2">{item.sales}</MDTypography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={3}
-                    mt={1}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{ borderBottom: "1px solid #e0e0e0", py: 1 }}
-                  >
-                    <MDTypography variant="body2">{item.value}</MDTypography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={2}
-                    mt={1}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{ borderBottom: "1px solid #e0e0e0", py: 1 }}
-                  >
-                    <MDTypography variant="body2">{item.bounce}</MDTypography>
-                  </Grid>
-                </React.Fragment>
-              ))}
-            </Grid>
+            <Box pb={3}>
+              <DataTable
+                table={{ columns, rows }}
+                isSorted={false}
+                entriesPerPage={false}
+                showTotalEntries={false}
+                noEndBorder
+              />
+            </Box>
           </Box>
         </Grid>
 
-        <Grid item xs={12} md={12} lg={7}>
+        <Grid item xs={12} md={12} lg={6}>
           <MapContainer
             bounds={[
               [8.18, 102.14],
@@ -161,7 +172,7 @@ function TrafficOverview() {
               [23.39, 109.46],
             ]}
             zoom={5.5}
-            className="w-full h-[500px] rounded-lg"
+            className="w-full h-[600px] rounded-lg"
           >
             <TileLayer
               url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
