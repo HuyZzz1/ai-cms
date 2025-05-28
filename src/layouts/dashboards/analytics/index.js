@@ -45,7 +45,7 @@ const Analytics = () => {
               marginBottom: 3,
             }}
           >
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={12} lg={4}>
               <MDBox sx={{ height: "100%", minHeight: 300 }}>
                 <ReportsBarChart
                   color="success"
@@ -54,7 +54,7 @@ const Analytics = () => {
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={12} lg={4}>
               <MDBox sx={{ height: "100%", minHeight: 300 }}>
                 <ReportsLineChart
                   color="success"
@@ -63,7 +63,7 @@ const Analytics = () => {
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={12} lg={4}>
               <MDBox sx={{ height: "100%", minHeight: 300 }}>
                 <RateOfViolations />
               </MDBox>
@@ -71,40 +71,44 @@ const Analytics = () => {
           </Grid>
         </MDBox>
         <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox>
+          <Grid container spacing={3} className="h-full">
+            <Grid item xs={12} md={6} lg={3} className="h-full">
+              <MDBox className="h-full">
                 <ComplexStatisticsCard
                   icon="weekend"
                   title="Tổng số phương tiện giám sát hôm nay"
                   count={281}
+                  className="h-full"
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox>
+            <Grid item xs={12} md={6} lg={3} className="h-full">
+              <MDBox className="h-full">
                 <ComplexStatisticsCard
                   icon="leaderboard"
                   title="Tổng số Vi Phạm ATGT theo ngày"
                   count="2,300"
+                  className="h-full"
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox>
+            <Grid item xs={12} md={6} lg={3} className="h-full">
+              <MDBox className="h-full">
                 <ComplexStatisticsCard
                   icon="store"
                   title="Tổng số vụ TNGT theo ngày"
                   count="34k"
+                  className="h-full"
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox>
+            <Grid item xs={12} md={6} lg={3} className="h-full">
+              <MDBox className="h-full">
                 <ComplexStatisticsCard
                   icon="person_add"
                   title="Số camera đang hoạt động"
                   count="+91"
+                  className="h-full"
                 />
               </MDBox>
             </Grid>
@@ -157,17 +161,6 @@ const Analytics = () => {
                       phạm hôm nay: 530
                     </p>
                   </Box>
-                  <Divider />
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    px={5}
-                    pb={1}
-                  >
-                    <p className="font-medium text-[16px]">Đường Hàm Nghi</p>
-                    <PlaceIcon fontSize="small" />
-                  </Box>
                 </Card>
               </MDBox>
             </Grid>
@@ -215,17 +208,6 @@ const Analytics = () => {
                       <WarningAmberIcon fontSize="small" color="warning" /> Vi
                       phạm hôm nay: 530
                     </p>
-                  </Box>
-                  <Divider />
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    px={5}
-                    pb={1}
-                  >
-                    <p className="font-medium text-[16px]">Đường Bạch Đằng</p>
-                    <PlaceIcon fontSize="small" />
                   </Box>
                 </Card>
               </MDBox>
@@ -275,17 +257,6 @@ const Analytics = () => {
                       phạm hôm nay: 530
                     </p>
                   </Box>
-                  <Divider />
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    px={5}
-                    pb={1}
-                  >
-                    <p className="font-medium text-[16px]">Đường 3/2</p>
-                    <PlaceIcon fontSize="small" />
-                  </Box>
                 </Card>
               </MDBox>
             </Grid>
@@ -333,17 +304,6 @@ const Analytics = () => {
                       <WarningAmberIcon fontSize="small" color="warning" /> Vi
                       phạm hôm nay: 530
                     </p>
-                  </Box>
-                  <Divider />
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    px={5}
-                    pb={1}
-                  >
-                    <p className="font-medium text-[16px]">Đường CMT 8</p>
-                    <PlaceIcon fontSize="small" />
                   </Box>
                 </Card>
               </MDBox>

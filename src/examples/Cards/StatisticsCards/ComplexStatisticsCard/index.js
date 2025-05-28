@@ -37,7 +37,7 @@ function ComplexStatisticsCard({
   icon,
 }) {
   return (
-    <Card>
+    <Card className="h-full xl:min-h-[115px]">
       <MDBox display="flex" justifyContent="space-between" pt={1} px={2} pb={3}>
         <MDBox lineHeight={1.25}>
           <MDTypography variant="button" fontWeight="light" color="text">
