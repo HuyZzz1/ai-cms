@@ -14,21 +14,28 @@ Coded by www.creative-tim.com
 */
 
 import { createRoot } from "react-dom/client";
-import { HashRouter } from "react-router-dom";
 import App from "App";
 import "./index.css";
 import "leaflet/dist/leaflet.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter } from "react-router-dom";
 
 // Material Dashboard 3 PRO React Context Provider
 import { MaterialUIControllerProvider } from "context";
+import { RecoilRoot } from "recoil";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
+const queryClient = new QueryClient();
 
 root.render(
-  <HashRouter>
-    <MaterialUIControllerProvider>
-      <App />
-    </MaterialUIControllerProvider>
-  </HashRouter>
+  <QueryClientProvider client={queryClient}>
+    <RecoilRoot>
+      <BrowserRouter>
+        <MaterialUIControllerProvider>
+          <App />
+        </MaterialUIControllerProvider>
+      </BrowserRouter>
+    </RecoilRoot>
+  </QueryClientProvider>
 );

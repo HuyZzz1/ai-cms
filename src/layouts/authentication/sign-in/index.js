@@ -9,6 +9,14 @@ import MDButton from "components/MDButton";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { loginQuery } from "service/api/auth";
+import { setCookie } from "service/cookies";
+import { CookieKey } from "service/cookies";
+import { showErrorToast } from "components/Toast";
+import { ErrorMessage } from "service/message";
+import { useSetRecoilState } from "recoil";
+import { userRecoil } from "service/recoil/user";
 
 function Basic() {
   const {
@@ -22,9 +30,22 @@ function Basic() {
     },
   });
   const navigate = useNavigate();
+  const setUser = useSetRecoilState(userRecoil);
 
-  const onSubmit = (data) => {
-    navigate("/dashboards/analytics");
+  const { mutate: login, isPending } = useMutation({
+    mutationFn: loginQuery,
+    onSuccess: ({ data }) => {
+      setCookie(CookieKey.ACCESS_TOKEN, data.accessToken);
+      setUser({ ...data.user, isLoading: false });
+      navigate("/dashboards/analytics");
+    },
+    onError: (err) => {
+      showErrorToast(ErrorMessage[err.message]);
+    },
+  });
+
+  const onSubmit = (values) => {
+    login(values);
   };
 
   return (
@@ -101,7 +122,13 @@ function Basic() {
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isPending}
+              >
                 Đăng nhập
               </MDButton>
             </MDBox>

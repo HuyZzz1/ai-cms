@@ -20,23 +20,14 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import Icon from "@mui/material/Icon";
 
-// Material Dashboard 3 PRO React examples
 import Sidenav from "examples/Sidenav";
-import Configurator from "examples/Configurator";
 
-// Material Dashboard 3 PRO React themes
 import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
 
-// Material Dashboard 3 PRO React Dark Mode themes
 import themeDark from "assets/theme-dark";
-import themeDarkRTL from "assets/theme-dark/theme-rtl";
 
-// RTL plugins
 import rtlPlugin from "stylis-plugin-rtl";
-import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
 import routes from "routes";
@@ -46,6 +37,29 @@ import {
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
+import { Toast } from "components/Toast";
+import { meQuery } from "service/api/auth";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { userRecoil } from "service/recoil/user";
+import LoaderComponent from "components/LoaderComponent";
+import { useMutation } from "@tanstack/react-query";
+import SignIn from "layouts/authentication/sign-in";
+
+const injectUserNameToRoutes = (routes, userName) =>
+  routes.map((route) => {
+    const newRoute = { ...route };
+
+    if (newRoute.dynamicName) {
+      newRoute.name = userName;
+    }
+
+    if (Array.isArray(newRoute.collapse)) {
+      newRoute.collapse = injectUserNameToRoutes(newRoute.collapse, userName);
+    }
+
+    return newRoute;
+  });
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -62,6 +76,8 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [user, setUser] = useRecoilState(userRecoil);
 
   // Cache for the rtl
   useMemo(() => {
@@ -93,21 +109,10 @@ export default function App() {
   const handleConfiguratorOpen = () =>
     setOpenConfigurator(dispatch, !openConfigurator);
 
-  // Setting the dir attribute for the body element
-  useEffect(() => {
-    document.body.setAttribute("dir", direction);
-  }, [direction]);
-
-  // Setting page scroll to 0 when changing the route
-  useEffect(() => {
-    document.documentElement.scrollTop = 0;
-    document.scrollingElement.scrollTop = 0;
-  }, [pathname]);
-
   const getRoutes = (allRoutes) =>
-    allRoutes.map((route) => {
+    allRoutes.flatMap((route) => {
       if (route.collapse) {
-        return getRoutes(route.collapse);
+        return getRoutes(route.collapse); // trả ra mảng các <Route />
       }
 
       if (route.route) {
@@ -121,24 +126,70 @@ export default function App() {
         );
       }
 
-      return null;
+      return [];
     });
+
+  const routesWithUserName = useMemo(() => {
+    if (!user?.name) return routes;
+    return injectUserNameToRoutes(routes, user.name);
+  }, [user]);
+
+  const { mutate: fetchMe, isPending } = useMutation({
+    mutationFn: meQuery,
+    onSuccess: ({ data }) => {
+      console.log("✅ data", data);
+      setUser({ ...data, isLoading: false });
+
+      if (pathname === "/authentication/sign-in") {
+        navigate("/dashboards/analytics");
+      }
+    },
+    onError: (error) => {
+      console.error("❌ onError", error);
+      navigate("/authentication/sign-in");
+    },
+  });
+
+  // Setting the dir attribute for the body element
+  useEffect(() => {
+    document.body.setAttribute("dir", direction);
+  }, [direction]);
+
+  // Setting page scroll to 0 when changing the route
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.scrollingElement.scrollTop = 0;
+  }, [pathname]);
+
+  useEffect(() => {
+    fetchMe();
+  }, []);
+
+  if (isPending) {
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center">
+        <LoaderComponent />
+      </div>
+    );
+  }
 
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
+      <Toast />
       <CssBaseline />
       {layout === "dashboard" && (
         <>
           <Sidenav
             color={sidenavColor}
-            routes={routes}
+            routes={routesWithUserName}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
         </>
       )}
       <Routes>
-        {getRoutes(routes)}
+        {getRoutes(routesWithUserName)}
+        <Route path="/authentication/sign-in" element={<SignIn />} />
         <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
       </Routes>
     </ThemeProvider>

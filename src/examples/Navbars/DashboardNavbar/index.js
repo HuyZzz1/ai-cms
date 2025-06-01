@@ -55,6 +55,11 @@ import {
   setOpenConfigurator,
 } from "context";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { userRecoil } from "service/recoil/user";
+import { removeCookie } from "service/cookies";
+import { CookieKey } from "service/cookies";
+import { DEFAULT_USER_RECOIL_STATE } from "service/recoil/user";
 
 const DashboardNavbar = ({
   absolute = false,
@@ -81,6 +86,7 @@ const DashboardNavbar = ({
   const handleCloseAccountMenu = () => setAnchorElAccount(null);
 
   const navigate = useNavigate();
+  const setUser = useSetRecoilState(userRecoil);
 
   useEffect(() => {
     // Setting the navbar type
@@ -149,15 +155,20 @@ const DashboardNavbar = ({
         horizontal: "right",
       }}
     >
-      <MenuItem onClick={handleCloseAccountMenu}>
-        <Link to="/profile" style={{ textDecoration: "none", color: "black" }}>
+      {/* <MenuItem onClick={handleCloseAccountMenu}>
+        <Link
+          to="/pages/profile/profile-overview"
+          style={{ textDecoration: "none", color: "black" }}
+        >
           Thông tin tài khoản
         </Link>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem
         onClick={() => {
           handleCloseAccountMenu();
-          navigate("/authentication/sign-in/basic");
+          removeCookie(CookieKey.ACCESS_TOKEN);
+          setUser(DEFAULT_USER_RECOIL_STATE);
+          navigate("/authentication/sign-in");
         }}
       >
         <p className="text-red-500 font-medium"> Đăng xuất</p>

@@ -65,6 +65,7 @@ import SignIn from "layouts/authentication/sign-in";
 import SignInIllustration from "layouts/authentication/sign-in/illustration";
 import SignUpCover from "layouts/authentication/sign-up/cover";
 import ResetCover from "layouts/authentication/reset-password/cover";
+import { Navigate } from "react-router-dom";
 
 // Material Dashboard 3 PRO React components
 import MDAvatar from "components/MDAvatar";
@@ -78,27 +79,22 @@ import profilePicture from "assets/images/team-3.jpg";
 const routes = [
   {
     type: "collapse",
-    name: "Admin",
-    key: "brooklyn-alice",
+    name: "",
+    key: "user-profile",
+    dynamicName: true,
     icon: <MDAvatar src={profilePicture} alt="Admin" size="sm" />,
     collapse: [
       {
-        name: "My Profile",
+        name: "Thông tin tài khoản",
         key: "my-profile",
         route: "/pages/profile/profile-overview",
         component: <ProfileOverview />,
       },
       {
-        name: "Settings",
+        name: "Thiết lập",
         key: "profile-settings",
         route: "/pages/account/settings",
         component: <Settings />,
-      },
-      {
-        name: "Logout",
-        key: "logout",
-        route: "/authentication/sign-in",
-        component: <SignIn />,
       },
     ],
   },
@@ -110,6 +106,7 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     collapse: [
       {
+        route: "/",
         name: "Tổng quan giao thông",
         key: "analytics",
         route: "/dashboards/analytics",
@@ -199,6 +196,7 @@ const routes = [
       },
     ],
   },
+
   // {
   //   type: "collapse",
   //   name: "Team",
@@ -532,5 +530,11 @@ const routes = [
   //   noCollapse: true,
   // },
 ];
+
+routes.push({
+  route: "/",
+  component: <Navigate to="/dashboards/analytics" />,
+  key: "redirect-home",
+});
 
 export default routes;
