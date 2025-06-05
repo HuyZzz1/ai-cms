@@ -142,13 +142,13 @@ const routes = [
         name: "TRAFSEC",
         key: "trafsec",
         route: "/pages/trafsec",
-        component: <Trafsec />,
+        // component: <Trafsec />,
       },
       {
         name: "Thiết bị",
         key: "device",
         route: "/pages/device",
-        component: <Device />,
+        // component: <Device />,
       },
       {
         name: "Người dùng",

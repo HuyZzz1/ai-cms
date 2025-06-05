@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { createRoot } from "react-dom/client";
-import App from "App";
+import App from "@/App";
 import "./index.css";
 import "leaflet/dist/leaflet.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
