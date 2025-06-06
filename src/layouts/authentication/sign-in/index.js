@@ -37,7 +37,7 @@ function Basic() {
     onSuccess: ({ data }) => {
       setCookie(CookieKey.ACCESS_TOKEN, data.accessToken);
       setUser({ ...data.user, isLoading: false });
-      navigate("/dashboards/analytics");
+      navigate("/dashboards/overview");
     },
     onError: (err) => {
       showErrorToast(ErrorMessage[err.message]);

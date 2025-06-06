@@ -26,21 +26,42 @@ import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 
 // Custom styles for the SidenavItem
-import { item, itemContent, itemArrow } from "examples/Sidenav/styles/sidenavItem";
+import {
+  item,
+  itemContent,
+  itemArrow,
+} from "examples/Sidenav/styles/sidenavItem";
 
 // Material Dashboard 3 PRO React contexts
 import { useMaterialUIController } from "context";
 
-function SidenavItem({ color = "info", name, active = false, nested = false, children = false, open = false, ...rest }) {
+function SidenavItem({
+  color = "info",
+  name,
+  active = false,
+  nested = false,
+  children = false,
+  open = false,
+  ...rest
+}) {
   const [controller] = useMaterialUIController();
-  const { miniSidenav, transparentSidenav, whiteSidenav, darkMode } = controller;
+  const { miniSidenav, transparentSidenav, whiteSidenav, darkMode } =
+    controller;
 
   return (
     <>
       <ListItem
         {...rest}
         component="li"
-        sx={(theme) => item(theme, { active, color, transparentSidenav, whiteSidenav, darkMode })}
+        sx={(theme) =>
+          item(theme, {
+            active,
+            color,
+            transparentSidenav,
+            whiteSidenav,
+            darkMode,
+          })
+        }
       >
         <MDBox
           sx={(theme) =>
@@ -61,7 +82,13 @@ function SidenavItem({ color = "info", name, active = false, nested = false, chi
             <Icon
               component="i"
               sx={(theme) =>
-                itemArrow(theme, { open, miniSidenav, transparentSidenav, whiteSidenav, darkMode })
+                itemArrow(theme, {
+                  open,
+                  miniSidenav,
+                  transparentSidenav,
+                  whiteSidenav,
+                  darkMode,
+                })
               }
             >
               expand_less
@@ -80,7 +107,15 @@ function SidenavItem({ color = "info", name, active = false, nested = false, chi
 
 // Typechecking props for the SidenavItem
 SidenavItem.propTypes = {
-  color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
+  color: PropTypes.oneOf([
+    "primary",
+    "secondary",
+    "info",
+    "success",
+    "warning",
+    "error",
+    "dark",
+  ]),
   name: PropTypes.string.isRequired,
   active: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   nested: PropTypes.bool,

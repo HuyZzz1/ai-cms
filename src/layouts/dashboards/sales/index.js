@@ -15,6 +15,8 @@ import {
 import DashboardLayout from "@/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "@/examples/Navbars/DashboardNavbar";
 import TopTrafficRoutesTable from "./components/TopTrafficRoutesTable";
+import { FilterDropdown } from "./components/FilterDropdown";
+import { useState } from "react";
 
 const pieData = [
   { name: "Tốc độ vượt quy định", value: 44.4, color: "#3b82f6" },
@@ -119,22 +121,31 @@ const topProducts = [
 ];
 
 export default function Sales() {
+  const [activeFilters, setActiveFilters] = useState({
+    searchQuery: "",
+    districtFilter: "all",
+    timeFilter: "today",
+  });
+
+  const handleApplyFilters = (filters) => {
+    console.log("Applying filters:", filters);
+    setActiveFilters(filters);
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar
         breadcrumbRoute={["Dashboard", "Tổng quan giao thông"]}
       />
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-2 md:flex-col md:items-start md:gap-3">
-          <div>
-            <p className="text-lg font-medium">
-              Theo dõi lưu lượng, vi phạm và tình hình giao thông
-            </p>
-          </div>
-          <div className="relative bg-white rounded-xl md:w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input placeholder="Tìm kiếm..." className="pl-10 w-80 md:w-full" />
-          </div>
+      <div className="flex items-center justify-between mb-6 sm:flex-col sm:items-start sm:gap-2">
+        <h2 className="text-xl font-semibold text-left ">
+          Theo dõi lưu lượng, vi phạm và tình hình giao thông
+        </h2>
+        <div className="sm:flex sm:w-full sm:justify-end">
+          <FilterDropdown
+            onApplyFilters={handleApplyFilters}
+            initialFilters={activeFilters}
+          />
         </div>
       </div>
 
