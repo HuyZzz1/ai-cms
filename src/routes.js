@@ -44,7 +44,6 @@ import NewUser from "layouts/pages/users/new-user";
 import Settings from "layouts/pages/account/settings";
 import Billing from "layouts/pages/account/billing";
 import Invoice from "layouts/pages/account/invoice";
-import CameraManager from "layouts/pages/projects/camera";
 import Trafsec from "layouts/pages/projects/trafsec";
 import Device from "layouts/pages/projects/device";
 import PricingPage from "layouts/pages/pricing-page";
@@ -75,6 +74,8 @@ import Icon from "@mui/material/Icon";
 
 // Images
 import profilePicture from "assets/images/team-3.jpg";
+import CameraManagement from "./layouts/camera/manager";
+import CameraMap from "./layouts/camera/map";
 
 const routes = [
   {
@@ -130,13 +131,13 @@ const routes = [
         name: "Giám sát trực tiếp",
         key: "camera",
         route: "management/camera",
-        component: <CameraManager />,
+        component: <CameraManagement />,
       },
       {
         name: "Bản đồ khu vực",
         key: "map",
         route: "management/map",
-        component: <Trafsec />,
+        component: <CameraMap />,
       },
       {
         name: "Cảnh báo AI",

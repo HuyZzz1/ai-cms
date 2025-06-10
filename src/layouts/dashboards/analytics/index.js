@@ -109,14 +109,12 @@ export default function Analytics() {
   return (
     <DashboardLayout>
       <DashboardNavbar
-        breadcrumbRoute={["Dashboard", "Tổng quan giao thông"]}
+        breadcrumbRoute={["Bảng điều khiển", "Trang tổng quan"]}
       />
 
       <div>
         <div className="flex items-center justify-between mb-6 sm:flex-col sm:items-start sm:gap-2">
-          <h2 className="text-xl font-semibold text-left ">
-            Tổng quan giao thông
-          </h2>
+          <h2 className="text-xl font-semibold text-left ">Trang tổng quan</h2>
           <div className="sm:flex sm:w-full sm:justify-end">
             <FilterDropdown
               onApplyFilters={handleApplyFilters}
