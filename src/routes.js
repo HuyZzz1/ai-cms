@@ -76,6 +76,7 @@ import Icon from "@mui/material/Icon";
 import profilePicture from "assets/images/team-3.jpg";
 import CameraManagement from "./layouts/camera/manager";
 import CameraMap from "./layouts/camera/map";
+import WarningAi from "./layouts/camera/warningAi";
 
 const routes = [
   {
@@ -143,7 +144,7 @@ const routes = [
         name: "Cảnh báo AI",
         key: "warning-ai",
         route: "management/warning-ai",
-        component: <Device />,
+        component: <WarningAi />,
       },
       // {
       //   name: "Charts",
