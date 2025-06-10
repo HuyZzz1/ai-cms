@@ -101,60 +101,48 @@ const routes = [
   { type: "divider", key: "divider-0" },
   {
     type: "collapse",
-    name: "Dashboards",
+    name: "Bảng điều khiển",
     key: "dashboards",
     icon: <Icon fontSize="small">dashboard</Icon>,
     collapse: [
       {
         route: "/",
-        name: "Tổng quan giao thông",
-        key: "analytics",
-        route: "/dashboards/analytics",
+        name: "Trang tổng quan",
+        key: "overview",
+        route: "/dashboards/overview",
         component: <Analytics />,
       },
       {
-        name: "Tổng quan vi phạm",
-        key: "sales",
-        route: "/dashboards/sales",
+        name: "Phân tích",
+        key: "analytics",
+        route: "/dashboards/analytics",
         component: <Sales />,
-      },
-      {
-        name: "Giám sát Camera",
-        key: "surveillance",
-        route: "/dashboards/surveillance",
-        component: <ProductPage />,
       },
     ],
   },
   {
     type: "collapse",
-    name: "Quản lý",
-    key: "pages",
-    icon: <Icon fontSize="small">content_paste</Icon>,
+    name: "Giám sát",
+    key: "management",
+    icon: <Icon fontSize="small">visibility</Icon>,
     collapse: [
       {
-        name: "VMS(Quản lí Camera)",
+        name: "Giám sát trực tiếp",
         key: "camera",
-        route: "/pages/camera",
+        route: "management/camera",
         component: <CameraManager />,
       },
       {
-        name: "TRAFSEC",
-        key: "trafsec",
-        route: "/pages/trafsec",
-        // component: <Trafsec />,
+        name: "Bản đồ khu vực",
+        key: "map",
+        route: "management/map",
+        component: <Trafsec />,
       },
       {
-        name: "Thiết bị",
-        key: "device",
-        route: "/pages/device",
-        // component: <Device />,
-      },
-      {
-        name: "Người dùng",
-        key: "widgets",
-        route: "/pages/widgets",
-        component: <Widgets />,
+        name: "Cảnh báo AI",
+        key: "warning-ai",
+        route: "management/warning-ai",
+        component: <Device />,
       },
       // {
       //   name: "Charts",
@@ -172,29 +160,64 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Báo cáo & Phân tích",
-    key: "account",
-    icon: <Icon fontSize="small">person</Icon>,
+    name: "Quản lí dữ liệu",
+    key: "data",
+    icon: <Icon fontSize="small">assignment</Icon>,
     collapse: [
       {
-        name: "Báo cáo nhanh",
-        key: "settings",
-        route: "/pages/account/settings",
+        name: "Lịch sử & Trích xuất",
+        key: "history",
+        route: "/data/history",
         component: <Settings />,
       },
       {
-        name: "Phân tích dữ liệu",
+        name: "Quản lí thiết bị camera",
         key: "billing",
         route: "/pages/account/billing",
         component: <Billing />,
       },
+    ],
+  },
+
+  {
+    type: "collapse",
+    name: "Hệ thống",
+    key: "system",
+    icon: <Icon fontSize="small">settings</Icon>,
+    collapse: [
       {
-        name: "Heatmap & Bản Đồ",
-        key: "invoice",
-        route: "/pages/account/invoice",
-        component: <Invoice />,
+        name: "Báo cáo & Cài đặt",
+        key: "report",
+        route: "/system/report",
       },
     ],
+  },
+  { type: "divider", key: "divider-1" },
+  { type: "title", title: "TÀI LIỆU", key: "title-documents" },
+
+  {
+    type: "collapse",
+    name: "Hướng dẫn Sử dụng",
+    key: "user-guide",
+    icon: <Icon fontSize="small">book</Icon>,
+    route: "/documents/user-guide",
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Tài liệu API",
+    key: "api-docs",
+    icon: <Icon fontSize="small">description</Icon>,
+    route: "/documents/api-docs",
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Nhật ký Thay đổi",
+    key: "changelog",
+    icon: <Icon fontSize="small">history</Icon>,
+    route: "/documents/changelog",
+    noCollapse: true,
   },
 
   // {
@@ -533,7 +556,7 @@ const routes = [
 
 routes.push({
   route: "/",
-  component: <Navigate to="/dashboards/analytics" />,
+  component: <Navigate to="/dashboards/overview" />,
   key: "redirect-home",
 });
 

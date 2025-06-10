@@ -141,7 +141,7 @@ export default function App() {
       setUser({ ...data, isLoading: false });
 
       if (pathname === "/authentication/sign-in") {
-        navigate("/dashboards/analytics");
+        navigate("/dashboards/overview");
       }
     },
     onError: (error) => {

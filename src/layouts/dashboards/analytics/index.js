@@ -5,14 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   BarChart,
   Bar,
@@ -24,19 +16,11 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import {
-  Search,
-  TrendingUp,
-  Car,
-  AlertTriangle,
-  Camera,
-  Clock,
-} from "lucide-react";
+import { TrendingUp, Car, AlertTriangle, Camera } from "lucide-react";
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "@/examples/Navbars/DashboardNavbar";
-
-console.log(require.resolve("@/components/ui/button"));
+import { FilterDropdown } from "./components/FilterDropdown";
 
 const vehicleTrafficData = [
   { day: "Thứ 2", vehicles: 28500 },
@@ -110,24 +94,16 @@ const trafficHotspots = [
 ];
 
 export default function Analytics() {
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [timeFilter, setTimeFilter] = useState("today");
+  const [activeFilters, setActiveFilters] = useState({
+    searchQuery: "",
+    districtFilter: "all",
+    timeFilter: "today",
+  });
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const formatTime = (date) => {
-    return date.toLocaleString("vi-VN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  const handleApplyFilters = (filters) => {
+    console.log("Applying filters:", filters);
+    setActiveFilters(filters);
+    // Ở đây bạn có thể thêm logic để lọc dữ liệu dựa trên filters
   };
 
   return (
@@ -137,65 +113,16 @@ export default function Analytics() {
       />
 
       <div>
-        {/* Search and Filter Controls */}
-        <div className="flex items-center mb-6 bg-white p-5 gap-4 rounded-xl border bg-card text-card-foreground shadow md:flex-col md:items-start md:gap-4 w-full ">
-          <div className="relative w-[28rem] md:w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Tìm kiếm theo tên đường, camera"
-              className="pl-10"
+        <div className="flex items-center justify-between mb-6 sm:flex-col sm:items-start sm:gap-2">
+          <h2 className="text-xl font-semibold text-left ">
+            Tổng quan giao thông
+          </h2>
+          <div className="sm:flex sm:w-full sm:justify-end">
+            <FilterDropdown
+              onApplyFilters={handleApplyFilters}
+              initialFilters={activeFilters}
             />
           </div>
-          <Select defaultValue="all">
-            <SelectTrigger className="w-48 md:w-full">
-              <SelectValue placeholder="Lọc theo quận/huyện" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả quận/huyện</SelectItem>
-              {/* Quận nội thành */}
-              <SelectItem value="hoankiem">Quận Hoàn Kiếm</SelectItem>
-              <SelectItem value="dongda">Quận Đống Đa</SelectItem>
-              <SelectItem value="haibatrung">Quận Hai Bà Trưng</SelectItem>
-              <SelectItem value="caugiay">Quận Cầu Giấy</SelectItem>
-              <SelectItem value="badinh">Quận Ba Đình</SelectItem>
-              <SelectItem value="tayho">Quận Tây Hồ</SelectItem>
-              <SelectItem value="hoangmai">Quận Hoàng Mai</SelectItem>
-              <SelectItem value="longbien">Quận Long Biên</SelectItem>
-              <SelectItem value="thanxuan">Quận Thanh Xuân</SelectItem>
-              <SelectItem value="namtuliem">Quận Nam Từ Liêm</SelectItem>
-              <SelectItem value="bactuliem">Quận Bắc Từ Liêm</SelectItem>
-              <SelectItem value="hadong">Quận Hà Đông</SelectItem>
-              {/* Thị xã */}
-              <SelectItem value="sonay">Thị xã Sơn Tây</SelectItem>
-              {/* Huyện */}
-              <SelectItem value="bacgiang">Huyện Ba Vì</SelectItem>
-              <SelectItem value="phuctho">Huyện Phúc Thọ</SelectItem>
-              <SelectItem value="danphuong">Huyện Đan Phượng</SelectItem>
-              <SelectItem value="hoaiduchuyen">Huyện Hoài Đức</SelectItem>
-              <SelectItem value="quocoan">Huyện Quốc Oai</SelectItem>
-              <SelectItem value="thachtat">Huyện Thạch Thất</SelectItem>
-              <SelectItem value="chuongmy">Huyện Chương Mỹ</SelectItem>
-              <SelectItem value="thanhoai">Huyện Thanh Oai</SelectItem>
-              <SelectItem value="thuongtin">Huyện Thường Tín</SelectItem>
-              <SelectItem value="phuyen">Huyện Phú Xuyên</SelectItem>
-              <SelectItem value="unghoahuyen">Huyện Ứng Hòa</SelectItem>
-              <SelectItem value="mytuc">Huyện Mỹ Đức</SelectItem>
-              <SelectItem value="gialam">Huyện Gia Lâm</SelectItem>
-              <SelectItem value="donganhhuyen">Huyện Đông Anh</SelectItem>
-              <SelectItem value="socson">Huyện Sóc Sơn</SelectItem>
-              <SelectItem value="melihuyen">Huyện Mê Linh</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={timeFilter} onValueChange={setTimeFilter}>
-            <SelectTrigger className="w-40 md:w-full">
-              <SelectValue placeholder="Chọn thời gian" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="today">Hôm nay</SelectItem>
-              <SelectItem value="7days">7 ngày qua</SelectItem>
-              <SelectItem value="month">Tháng này</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         {/* Main Charts */}

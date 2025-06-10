@@ -1,3 +1,5 @@
+"use client";
+
 /**
 =========================================================
 * Material Dashboard 3 PRO React - v2.4.0
@@ -49,8 +51,9 @@ import {
 } from "context";
 
 function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
-  const [openCollapse, setOpenCollapse] = useState(false);
-  const [openNestedCollapse, setOpenNestedCollapse] = useState(false);
+  // Thay đổi state để hỗ trợ multi-open
+  const [openCollapses, setOpenCollapses] = useState(new Set());
+  const [openNestedCollapses, setOpenNestedCollapses] = useState(new Set());
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode } =
     controller;
@@ -71,9 +74,39 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
+  // Helper functions cho toggle
+  const toggleCollapse = (key) => {
+    setOpenCollapses((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(key)) {
+        newSet.delete(key);
+      } else {
+        newSet.add(key);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleNestedCollapse = (key) => {
+    setOpenNestedCollapses((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(key)) {
+        newSet.delete(key);
+      } else {
+        newSet.add(key);
+      }
+      return newSet;
+    });
+  };
+
   useEffect(() => {
-    setOpenCollapse(collapseName);
-    setOpenNestedCollapse(itemParentName);
+    // Tự động thêm menu hiện tại vào Set
+    if (collapseName) {
+      setOpenCollapses((prev) => new Set([...prev, collapseName]));
+    }
+    if (itemParentName) {
+      setOpenNestedCollapses((prev) => new Set([...prev, itemParentName]));
+    }
   }, [collapseName, itemParentName]);
 
   useEffect(() => {
@@ -113,11 +146,15 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
           rel="noreferrer"
           sx={{ textDecoration: "none" }}
         >
-          <SidenavItem name={name} nested />
+          <SidenavItem name={name.replace(/^[A-Z]\s+/, "")} nested />
         </Link>
       ) : (
         <NavLink to={route} key={key} sx={{ textDecoration: "none" }}>
-          <SidenavItem name={name} active={route === pathname} nested />
+          <SidenavItem
+            name={name.replace(/^[A-Z]\s+/, "")}
+            active={route === pathname}
+            nested
+          />
         </NavLink>
       )
     );
@@ -136,13 +173,13 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
             color={color}
             name={name}
             active={key === itemParentName ? "isParent" : false}
-            open={openNestedCollapse === key}
-            onClick={({ currentTarget }) =>
-              openNestedCollapse === key &&
-              currentTarget.classList.contains("MuiListItem-root")
-                ? setOpenNestedCollapse(false)
-                : setOpenNestedCollapse(key)
-            }
+            open={openNestedCollapses.has(key)}
+            onClick={({ currentTarget }) => {
+              // Chỉ toggle khi click vào chính item đó
+              if (currentTarget.classList.contains("MuiListItem-root")) {
+                toggleNestedCollapse(key);
+              }
+            }}
           >
             {renderNestedCollapse(collapse)}
           </SidenavItem>
@@ -210,12 +247,8 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
               name={name}
               icon={icon}
               active={key === collapseName}
-              open={openCollapse === key}
-              onClick={() =>
-                openCollapse === key
-                  ? setOpenCollapse(false)
-                  : setOpenCollapse(key)
-              }
+              open={openCollapses.has(key)}
+              onClick={() => toggleCollapse(key)}
             >
               {collapse ? renderCollapse(collapse) : null}
             </SidenavCollapse>
@@ -228,7 +261,6 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
             color={textColor}
             display="block"
             variant="caption"
-            fontWeight="bold"
             textTransform="uppercase"
             pl={2}
             mt={2}
