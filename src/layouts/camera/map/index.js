@@ -265,7 +265,6 @@ export default function CameraMap() {
       type: "traffic",
     },
   ];
-
   const filteredMarkers = cameraMarkers.filter(
     (marker) =>
       marker.district.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -273,23 +272,22 @@ export default function CameraMap() {
   );
 
   const getMarkerColor = (type) => {
-    return type === "speed" ? "bg-rose-400" : "bg-slate-400"; // Pantone-inspired soft colors
+    return type === "speed" ? "bg-rose-400" : "bg-slate-400";
   };
 
   const getMarkerHoverColor = (type) => {
     return type === "speed" ? "bg-rose-500" : "bg-slate-500";
   };
 
+  const selected = cameraMarkers.find((m) => m.id === selectedMarker);
+
   return (
     <DashboardLayout>
       <DashboardNavbar breadcrumbRoute={["Giám sát", "Bản đồ khu vực"]} />
       <div
-        className="relative w-full overflow-hidden"
-        style={{
-          height: "calc(100vh - 80px)",
-        }}
+        className="relative w-full overflow-hidden pb-36 sm:pb-0"
+        style={{ height: "calc(100vh - 80px)" }}
       >
-        {/* Map Background */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-90"
           style={{
@@ -323,38 +321,27 @@ export default function CameraMap() {
           </div>
         </div>
 
-        {/* Legend */}
-
-        {/* Camera Markers */}
         {filteredMarkers.map((marker) => (
           <div
             key={marker.id}
-            className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:scale-110 z-10"
-            style={{
-              left: `${marker.x}%`,
-              top: `${marker.y}%`,
-            }}
+            className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:scale-110 z-0"
+            style={{ left: `${marker.x}%`, top: `${marker.y}%` }}
             onClick={() =>
               setSelectedMarker(selectedMarker === marker.id ? null : marker.id)
             }
           >
             <div
-              className={`
-            w-9 h-9 rounded-full flex items-center justify-center text-white font-medium text-xs
-            shadow-md border-2 border-white/80 transition-all duration-300
-            ${
-              selectedMarker === marker.id
-                ? `${getMarkerHoverColor(marker.type)} scale-110 shadow-lg`
-                : getMarkerColor(marker.type)
-            }
-          `}
+              className={`w-9 h-9 rounded-full flex items-center justify-center text-white font-medium text-xs shadow-md border-2 border-white/80 transition-all duration-300 z-0 ${
+                selectedMarker === marker.id
+                  ? `${getMarkerHoverColor(marker.type)} scale-110 shadow-lg`
+                  : getMarkerColor(marker.type)
+              } z-0 sm-min:scale-100 scale-90`}
             >
               {marker.number}
             </div>
 
-            {/* Tooltip */}
             {selectedMarker === marker.id && (
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/50 px-3 py-2 text-sm font-medium text-gray-700 whitespace-nowrap z-20 max-w-48">
+              <div className="hidden sm-min:block absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/50 px-3 py-2 text-sm font-medium text-gray-700 whitespace-nowrap z-20 max-w-48 z-50">
                 <div className="font-semibold text-gray-800">
                   {marker.district}
                 </div>
@@ -374,76 +361,90 @@ export default function CameraMap() {
           </div>
         ))}
 
-        {/* Statistics */}
-        <div className="absolute bottom-32 left-4 z-20">
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200/50 p-3">
-            <h3 className="font-medium text-sm mb-2 text-gray-600">
-              Chú thích
-            </h3>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs">
-                <div className="w-3 h-3 rounded-full bg-slate-400"></div>
-                <span className="text-gray-600">Camera giao thông</span>
+        {selected && (
+          <div className="fixed bottom-40 inset-x-4 z-30 sm-min:hidden bg-white/90 rounded-xl p-4 shadow-lg border border-gray-200/50">
+            <div className="font-semibold text-gray-800">
+              {selected.district}
+            </div>
+            <div className="text-gray-600 text-xs">{selected.location}</div>
+            <div
+              className={`text-xs mt-1 ${
+                selected.type === "speed" ? "text-rose-500" : "text-slate-500"
+              }`}
+            >
+              {selected.type === "speed"
+                ? "Camera tốc độ"
+                : "Camera giao thông"}
+            </div>
+          </div>
+        )}
+
+        <div className="absolute bottom-4 left-0 right-0 z-20 px-4 flex flex-col gap-3 sm-min:flex-row  sm-min:px-8">
+          <div className="flex items-center gap-2.5">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200/50 p-3 w-full sm-min:w-auto">
+              <h3 className="font-medium text-sm mb-2 text-gray-600">
+                Chú thích
+              </h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-xs">
+                  <div className="w-3 h-3 rounded-full bg-slate-400"></div>
+                  <span className="text-gray-600">Camera giao thông</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs">
+                  <div className="w-3 h-3 rounded-full bg-rose-400"></div>
+                  <span className="text-gray-600">Camera tốc độ</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-xs">
-                <div className="w-3 h-3 rounded-full bg-rose-400"></div>
-                <span className="text-gray-600">Camera tốc độ</span>
+            </div>
+
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200/50 p-3 w-full sm-min:w-auto">
+              <div className="text-sm font-medium text-gray-700">Thống kê</div>
+              <div className="text-xs text-gray-500 mt-1">
+                Tổng: {filteredMarkers.length} camera
+              </div>
+              <div className="text-xs text-gray-500 flex gap-3 mt-1">
+                <span className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-rose-400"></div>
+                  {filteredMarkers.filter((m) => m.type === "speed").length}
+                </span>
+                <span className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                  {filteredMarkers.filter((m) => m.type === "traffic").length}
+                </span>
               </div>
             </div>
           </div>
         </div>
-
-        <div className="absolute bottom-5 left-4 z-20">
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200/50 p-3">
-            <div className="text-sm font-medium text-gray-700">Thống kê</div>
-            <div className="text-xs text-gray-500 mt-1">
-              Tổng: {filteredMarkers.length} camera
-            </div>
-            <div className="text-xs text-gray-500 flex gap-3 mt-1">
-              <span className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-rose-400"></div>
-                {filteredMarkers.filter((m) => m.type === "speed").length}
-              </span>
-              <span className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-slate-400"></div>
-                {filteredMarkers.filter((m) => m.type === "traffic").length}
-              </span>
-            </div>
-          </div>
+        <div className="absolute left-1/2 bottom-10 z-20 translate-x-[-50%] sm:bottom-[115px]">
+          <Button
+            className="bg-white/90 text-gray-700 sm:!text-xs sm:px-3 sm:py-1 hover:bg-white shadow-md rounded-full px-6 py-3 font-medium text-base border border-gray-200/50 backdrop-blur-sm w-full sm-min:w-auto"
+            onClick={() =>
+              alert("Chức năng báo cáo camera mới sẽ được triển khai tại đây")
+            }
+          >
+            {" "}
+            <MapPin className="h-4 w-4 mr-2 text-gray-600 " /> Báo cáo camera
+            mới{" "}
+          </Button>
         </div>
 
-        {/* Map Controls */}
         <div className="absolute bottom-32 right-4 flex flex-col gap-2 z-20">
           <Button
             variant="outline"
             size="icon"
-            className="bg-white/80 shadow-sm border-gray-200 hover:bg-gray-50"
+            className="bg-white/80 shadow-sm border border-gray-200 hover:bg-gray-50"
           >
             <Navigation className="h-4 w-4 text-gray-500" />
           </Button>
         </div>
 
-        {/* Report Button */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-          <Button
-            className="bg-white/90 text-gray-700 hover:bg-white shadow-md rounded-full px-6 py-3 font-medium text-base border border-gray-200/50 backdrop-blur-sm"
-            onClick={() =>
-              alert("Chức năng báo cáo camera mới sẽ được triển khai tại đây")
-            }
-          >
-            <MapPin className="h-4 w-4 mr-2 text-gray-600" />
-            Báo cáo camera mới
-          </Button>
-        </div>
-
-        {/* Footer */}
-        <div className="absolute bottom-4 right-4 text-xs text-gray-500 z-20">
+        <div className="absolute bottom-1 right-4 text-xs text-gray-500 z-20">
           <span>Dữ liệu bản đồ ©2025 | </span>
           <a href="#" className="underline hover:text-gray-600">
             Điều khoản
           </a>
         </div>
-      </div>{" "}
+      </div>
     </DashboardLayout>
   );
 }

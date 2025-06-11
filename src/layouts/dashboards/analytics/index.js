@@ -112,13 +112,14 @@ export default function Analytics() {
         breadcrumbRoute={["Bảng điều khiển", "Trang tổng quan"]}
       />
 
-      <div>
-        <div className="flex items-center justify-between mb-6 sm:flex-col sm:items-start sm:gap-2">
+      <div className="w-full h-full">
+        <div className="flex items-center justify-between mb-6 sm:flex-col sm:items-start sm:gap-2 w-full h-full">
           <h2 className="text-xl font-semibold text-left ">Trang tổng quan</h2>
-          <div className="sm:flex sm:w-full sm:justify-end">
+          <div className="flex items-center gap-2.5 justify-end sm:flex-col sm:w-full  ">
             <FilterDropdown
               onApplyFilters={handleApplyFilters}
               initialFilters={activeFilters}
+              className="sm:w-full"
             />
           </div>
         </div>

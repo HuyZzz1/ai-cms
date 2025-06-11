@@ -77,6 +77,8 @@ import profilePicture from "assets/images/team-3.jpg";
 import CameraManagement from "./layouts/camera/manager";
 import CameraMap from "./layouts/camera/map";
 import WarningAi from "./layouts/camera/warningAi";
+import History from "./layouts/historyData/history";
+import HistoryCamera from "./layouts/historyData/camera";
 
 const routes = [
   {
@@ -170,13 +172,13 @@ const routes = [
         name: "Lịch sử & Trích xuất",
         key: "history",
         route: "/data/history",
-        component: <Settings />,
+        component: <History />,
       },
       {
         name: "Quản lí thiết bị camera",
-        key: "billing",
-        route: "/pages/account/billing",
-        component: <Billing />,
+        key: "history-camera",
+        route: "/data/history-camera",
+        component: <HistoryCamera />,
       },
     ],
   },
