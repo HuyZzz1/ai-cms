@@ -2,9 +2,10 @@ import { atom } from "recoil";
 
 export const DEFAULT_USER_RECOIL_STATE = {
   _id: "",
-  name: "",
   email: "",
+  passwordHash: "",
   role: "",
+  tenantId: null,
 };
 
 export const userRecoil = atom({

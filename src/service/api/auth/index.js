@@ -5,5 +5,5 @@ export const loginQuery = async (params) => {
 };
 
 export const meQuery = async () => {
-  return await http.get("/v1/auth/me");
+  return await http.get("/v1/users/profile");
 };

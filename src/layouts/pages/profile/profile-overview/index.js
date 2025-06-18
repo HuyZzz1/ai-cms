@@ -74,7 +74,7 @@ function Overview() {
                 title="Thông tin tài khoản"
                 description=""
                 info={{
-                  Tên: user?.name,
+                  // Tên: user?.name,
                   email: user?.email,
                 }}
                 social={[]}

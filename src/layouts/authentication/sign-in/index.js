@@ -35,7 +35,7 @@ function Basic() {
   const { mutate: login, isPending } = useMutation({
     mutationFn: loginQuery,
     onSuccess: ({ data }) => {
-      setCookie(CookieKey.ACCESS_TOKEN, data.accessToken);
+      setCookie(CookieKey.ACCESS_TOKEN, data.access_token);
       setUser({ ...data.user, isLoading: false });
       navigate("/dashboards/overview");
     },

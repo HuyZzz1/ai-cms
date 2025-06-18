@@ -79,6 +79,7 @@ import CameraMap from "./layouts/camera/map";
 import WarningAi from "./layouts/camera/warningAi";
 import History from "./layouts/historyData/history";
 import HistoryCamera from "./layouts/historyData/camera";
+import burceMars from "assets/images/bruce-mars.jpg";
 
 const routes = [
   {
@@ -86,7 +87,7 @@ const routes = [
     name: "",
     key: "user-profile",
     dynamicName: true,
-    icon: <MDAvatar src={profilePicture} alt="Admin" size="sm" />,
+    icon: <MDAvatar src={burceMars} alt="Admin" size="sm" />,
     collapse: [
       {
         name: "Thông tin tài khoản",

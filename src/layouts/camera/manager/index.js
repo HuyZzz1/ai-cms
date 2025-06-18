@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CameraCard from "./CameraCard";
 import DashboardLayout from "@/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "@/examples/Navbars/DashboardNavbar";
 import { FilterDropdown } from "./FilterDropdown";
+import ModalWithCameraForm from "./modal/ModalWithCameraForm";
 
 export default function CameraManagement() {
+  const modalRef = useRef();
+
   const [activeFilters, setActiveFilters] = useState({
     searchQuery: "",
     districtFilter: "all",
@@ -115,48 +118,54 @@ export default function CameraManagement() {
   });
 
   return (
-    <DashboardLayout>
-      <DashboardNavbar breadcrumbRoute={["Giám sát", "Giám sát trực tiếp"]} />
-      <div className="flex items-center justify-between mb-6 sm:flex-col sm:items-start sm:gap-2 w-full h-full">
-        <h2 className="text-xl font-semibold text-left flex-1">
-          Giám sát trực tiếp
-        </h2>
-        <div className="flex items-center gap-2.5 justify-end sm:flex-col sm:w-full  ">
-          <FilterDropdown
-            onApplyFilters={handleApplyFilters}
-            initialFilters={activeFilters}
-            className="sm:w-full"
-          />
-          <Button className="bg-gray-900 hover:bg-gray-800 text-white flex items-center gap-1 sm:w-full">
-            <Plus className="h-4 w-4" />
-            <span>Thêm Camera Mới</span>
-          </Button>
-        </div>
-      </div>
-
-      <main>
-        <div className="mb-4">
-          <p className="text-sm text-gray-600">
-            Hiển thị {filteredCameras.length} / {cameras.length} camera
-          </p>
+    <>
+      <ModalWithCameraForm ref={modalRef} />
+      <DashboardLayout>
+        <DashboardNavbar breadcrumbRoute={["Giám sát", "Giám sát trực tiếp"]} />
+        <div className="flex items-center justify-between mb-6 sm:flex-col sm:items-start sm:gap-2 w-full h-full">
+          <h2 className="text-xl font-semibold text-left flex-1">
+            Giám sát trực tiếp
+          </h2>
+          <div className="flex items-center gap-2.5 justify-end sm:flex-col sm:w-full  ">
+            <FilterDropdown
+              onApplyFilters={handleApplyFilters}
+              initialFilters={activeFilters}
+              className="sm:w-full"
+            />
+            <Button
+              className="bg-gray-900 hover:bg-gray-800 text-white flex items-center gap-1 sm:w-full"
+              onClick={() => modalRef.current?.open()}
+            >
+              <Plus className="h-4 w-4" />
+              <span>Thêm Camera Mới</span>
+            </Button>
+          </div>
         </div>
 
-        {/* Camera grid */}
-        <div className="grid grid-cols-1 sm-min:grid-cols-2 lg-min:grid-cols-3 xl-min:grid-cols-4 gap-3 sm-min:gap-4">
-          {filteredCameras.map((camera) => (
-            <CameraCard key={camera.id} camera={camera} />
-          ))}
-        </div>
-
-        {/* No results */}
-        {filteredCameras.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">
-              Không tìm thấy camera nào phù hợp với bộ lọc
+        <main>
+          <div className="mb-4">
+            <p className="text-sm text-gray-600">
+              Hiển thị {filteredCameras.length} / {cameras.length} camera
             </p>
           </div>
-        )}
-      </main>
-    </DashboardLayout>
+
+          {/* Camera grid */}
+          <div className="grid grid-cols-1 sm-min:grid-cols-2 lg-min:grid-cols-3 xl-min:grid-cols-4 gap-3 sm-min:gap-4">
+            {filteredCameras.map((camera) => (
+              <CameraCard key={camera.id} camera={camera} />
+            ))}
+          </div>
+
+          {/* No results */}
+          {filteredCameras.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500">
+                Không tìm thấy camera nào phù hợp với bộ lọc
+              </p>
+            </div>
+          )}
+        </main>
+      </DashboardLayout>
+    </>
   );
 }

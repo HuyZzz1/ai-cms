@@ -39,6 +39,7 @@ import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
 import { useRecoilValue } from "recoil";
 import { userRecoil } from "service/recoil/user";
+import { RoleName } from "@/service/constant";
 
 function Header({ children = "" }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
@@ -109,11 +110,11 @@ function Header({ children = "" }) {
           </Grid>
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
-              <MDTypography variant="h5" fontWeight="medium">
-                {user?.name}
+              <MDTypography variant="button" color="text" fontWeight="medium">
+                <span className="uppercase">{RoleName[user.role]}</span>
               </MDTypography>
-              <MDTypography variant="button" color="text" fontWeight="regular">
-                <span className="uppercase">{user?.role}</span>
+              <MDTypography variant="h6" fontWeight="medium">
+                {user?.email}
               </MDTypography>
             </MDBox>
           </Grid>
