@@ -22,7 +22,6 @@ export default function CameraManagement() {
   });
 
   const handleApplyFilters = (filters) => {
-    console.log("Applying filters:", filters);
     setActiveFilters(filters);
   };
 
@@ -40,6 +39,7 @@ export default function CameraManagement() {
       const queryParams = {
         page,
         limit: 12,
+        searchType: "device",
         ...(activeFilters.searchQuery && { search: activeFilters.searchQuery }),
         ...(Object.keys(filter).length > 0 && { filter }),
       };
@@ -76,11 +76,11 @@ export default function CameraManagement() {
         </div>
 
         <main>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <p className="text-sm text-gray-600">
               Hiển thị {cameraList.length} / {data?.docs.length} camera
             </p>
-          </div>
+          </div> */}
 
           {isLoading ? (
             <div className="grid grid-cols-1 sm-min:grid-cols-2 lg-min:grid-cols-3 xl-min:grid-cols-4 gap-3 sm-min:gap-4">

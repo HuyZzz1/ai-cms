@@ -82,3 +82,12 @@
 [data-state="open"] > .fixed.bg-black {
   z-index: 9998 !important;
 }
+
+.ReactModal__Overlay {
+  z-index: 99999 !important;
+}
+
+.ril__outer,
+.ril__overlay {
+  z-index: 99999 !important;
+}

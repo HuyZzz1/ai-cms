@@ -9,6 +9,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Filter, ChevronDown, Search } from "lucide-react";
+import { QueryKey } from "@/service/constant";
+import { useQuery } from "@tanstack/react-query";
+import { getListRuleViolationsQuery } from "@/service/api/violations";
 
 export function FilterDropdown({
   onApplyFilters,
@@ -17,13 +20,28 @@ export function FilterDropdown({
 }) {
   const defaultFilters = {
     searchQuery: "",
-    districtFilter: "all",
-    timeFilter: "today",
+    status: "all",
+    ruleId: "all",
   };
 
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [filters, setFilters] = useState(initialFilters || defaultFilters);
   const dropdownRef = useRef(null);
+
+  const { data } = useQuery({
+    queryKey: [QueryKey.ruleViolations],
+    queryFn: () => {
+      const queryParams = {
+        page: 1,
+        limit: 9999,
+      };
+
+      return getListRuleViolationsQuery(queryParams);
+    },
+    keepPreviousData: true,
+  });
+
+  const dataRuleViolations = data?.docs;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -91,7 +109,13 @@ export function FilterDropdown({
             e.stopPropagation();
           }}
         >
-          <div className="p-4">
+          <div
+            className="p-4"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
             <h3 className="text-sm font-semibold text-gray-900 mb-4">
               Bộ lọc nâng cao
             </h3>
@@ -105,7 +129,7 @@ export function FilterDropdown({
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
-                    placeholder="Tìm kiếm theo biển số xe, vị trí,..."
+                    placeholder="Tìm kiếm theo biển số xe"
                     className="pl-10 text-sm"
                     value={filters.searchQuery}
                     onChange={(e) =>
@@ -120,8 +144,8 @@ export function FilterDropdown({
                   Loại vi phạm
                 </label>
                 <Select
-                  value={filters.type}
-                  onValueChange={(value) => handleFilterChange("type", value)}
+                  value={filters.ruleId}
+                  onValueChange={(value) => handleFilterChange("ruleId", value)}
                 >
                   <SelectTrigger
                     className="text-sm"
@@ -131,12 +155,11 @@ export function FilterDropdown({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="1">Vượt đèn đỏ</SelectItem>
-                    <SelectItem value="2">Lấn làn</SelectItem>
-                    <SelectItem value="3">Xe quay đầu cấm</SelectItem>
-                    <SelectItem value="4">Đi sai chiều</SelectItem>
-                    <SelectItem value="5">Không đội mũ bảo hiểm</SelectItem>
-                    <SelectItem value="6">Dừng đỗ sai quy định</SelectItem>
+                    {(dataRuleViolations || []).map((item) => (
+                      <SelectItem key={item?.id} value={item?.id}>
+                        {item?.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -158,9 +181,12 @@ export function FilterDropdown({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="1">Đang xử lý</SelectItem>
-                    <SelectItem value="2">Đã ghi nhận</SelectItem>
-                    <SelectItem value="3">Cảnh báo gửi đi</SelectItem>
+                    <SelectItem value="pending">Chờ xử lí</SelectItem>
+                    <SelectItem value="processing">Đang xử lí</SelectItem>
+                    <SelectItem value="resolved">Đã ghi nhận</SelectItem>
+                    <SelectItem value="sent_warning">
+                      Cảnh báo gửi đi
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>

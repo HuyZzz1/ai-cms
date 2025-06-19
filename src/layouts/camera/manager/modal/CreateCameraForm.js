@@ -86,16 +86,18 @@ const CreateCameraForm = forwardRef(({}, ref) => {
           control={control}
           errors={errors}
         />
-        <CameraSelectField
-          name="regionId"
-          label="Khu vực"
-          control={control}
-          errors={errors}
-          options={regionList?.map((opt) => ({
-            value: opt._id,
-            label: opt.name,
-          }))}
-        />
+        {regionList && (
+          <CameraSelectField
+            name="regionId"
+            label="Khu vực"
+            control={control}
+            errors={errors}
+            options={regionList.map((opt) => ({
+              value: opt._id,
+              label: opt.name,
+            }))}
+          />
+        )}
 
         <CameraInputField
           name="location"

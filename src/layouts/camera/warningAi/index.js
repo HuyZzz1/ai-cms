@@ -1,20 +1,69 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import DashboardLayout from "@/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "@/examples/Navbars/DashboardNavbar";
 import { FilterDropdown } from "./FilterDropdown";
 import TrafficViolationsTable from "./TrafficViolationsTable";
+import { QueryKey } from "@/service/constant";
+import { useQuery } from "@tanstack/react-query";
+import { getListViolationsQuery } from "@/service/api/violations";
+import dayjs from "dayjs";
 
 export default function WarningAi() {
   const [activeFilters, setActiveFilters] = useState({
     searchQuery: "",
-    districtFilter: "all",
     status: "all",
-    type: "all",
+    ruleId: "all",
   });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   const handleApplyFilters = (filters) => {
     setActiveFilters(filters);
   };
+
+  const { data, isLoading } = useQuery({
+    queryKey: [QueryKey.violations, activeFilters, currentPage],
+    queryFn: () => {
+      const filter = {
+        isAI: true,
+      };
+      if (activeFilters.ruleId !== "all") {
+        filter.ruleId = activeFilters.ruleId;
+      }
+      if (activeFilters.status !== "all") {
+        filter.status = activeFilters.status;
+      }
+
+      const queryParams = {
+        page: currentPage,
+        limit: 12,
+        searchType: "vehiclePlate",
+        ...(activeFilters.searchQuery && { search: activeFilters.searchQuery }),
+        ...(Object.keys(filter).length > 0 && { filter }),
+      };
+
+      return getListViolationsQuery(queryParams);
+    },
+    keepPreviousData: true,
+  });
+
+  const formattedData = useMemo(() => {
+    return data?.docs?.map((item, index) => ({
+      stt: (currentPage - 1) * 10 + index + 1,
+      time: dayjs(item.createdAt).format("HH:mm"),
+      date: dayjs(item.createdAt).format("DD/MM/YYYY"),
+      violation: item.ruleId?.name || item.name || "Không rõ",
+      location: item.cameraId?.location || "Không rõ",
+      status: item.status,
+      camera: item.cameraId?.device || "-",
+      evidence: "Hình ảnh",
+      vehicleType: item.vehicleType,
+      color: item.vehicleColor || "-",
+      licensePlate: item.vehiclePlate || "-",
+      evidences: item?.evidences,
+    }));
+  }, [data]);
 
   return (
     <DashboardLayout>
@@ -30,7 +79,14 @@ export default function WarningAi() {
         </div>
       </div>
 
-      <TrafficViolationsTable />
+      <TrafficViolationsTable
+        data={formattedData}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalItems={data?.totalDocs || 0}
+        isLoading={isLoading}
+      />
     </DashboardLayout>
   );
 }

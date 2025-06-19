@@ -12,6 +12,7 @@ import DashboardLayout from "@/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "@/examples/Navbars/DashboardNavbar";
 import { QueryKey } from "@/service/constant";
 import { getListCameraQuery } from "@/service/api/camera";
+import { MapPin } from "lucide-react";
 
 const getName = (status) => {
   switch (status) {
@@ -173,11 +174,9 @@ function CameraMap() {
                       sticky
                       permanent
                     >
-                      <div>
-                        ⚙️ {getName(cam.status)}
-                        <br />
-                        📍 {cam.locationName}
-                      </div>
+                      ⚙️ {getName(cam.status)}
+                      <br />
+                      📍 {cam.locationName}
                     </Tooltip>
                   ) : (
                     <Tooltip
@@ -187,11 +186,9 @@ function CameraMap() {
                       opacity={1}
                       sticky
                     >
-                      <div>
-                        ⚙️ {getName(cam.status)}
-                        <br />
-                        📍 {cam.locationName}
-                      </div>
+                      ⚙️ {getName(cam.status)}
+                      <br />
+                      📍 {cam.locationName}
                     </Tooltip>
                   )}
                 </CircleMarker>
@@ -201,5 +198,4 @@ function CameraMap() {
     </DashboardLayout>
   );
 }
-
 export default CameraMap;

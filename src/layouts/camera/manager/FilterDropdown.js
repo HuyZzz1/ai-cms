@@ -29,8 +29,6 @@ export function FilterDropdown({
 
   const regionList = useRecoilValue(regionsRecoil);
 
-  console.log("regionList", regionList);
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
