@@ -70,7 +70,7 @@ export function FilterDropdown({
     <div className={`relative ${className}`} ref={dropdownRef}>
       <Button
         variant="outline"
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 w-full"
         onClick={() => setShowFilterDropdown(!showFilterDropdown)}
       >
         <Filter className="h-4 w-4" />
@@ -84,7 +84,13 @@ export function FilterDropdown({
 
       {/* Filter Dropdown Panel */}
       {showFilterDropdown && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+        <div
+          className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
           <div className="p-4">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">
               Bộ lọc nâng cao

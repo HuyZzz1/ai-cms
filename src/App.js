@@ -40,22 +40,25 @@ import {
 import { Toast } from "components/Toast";
 import { meQuery } from "service/api/auth";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { userRecoil } from "service/recoil/user";
 import LoaderComponent from "components/LoaderComponent";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import SignIn from "layouts/authentication/sign-in";
+import { DEFAULT_FILTER, QueryKey, RoleName } from "./service/constant";
+import { regionsRecoil } from "./service/recoil/regions";
+import { getListRegionsQuery } from "./service/api/camera";
 
-const injectUserNameToRoutes = (routes, userName) =>
+const injectUserNameToRoutes = (routes, userRole) =>
   routes.map((route) => {
     const newRoute = { ...route };
 
     if (newRoute.dynamicName) {
-      newRoute.name = userName;
+      newRoute.name = RoleName[userRole] || userRole;
     }
 
     if (Array.isArray(newRoute.collapse)) {
-      newRoute.collapse = injectUserNameToRoutes(newRoute.collapse, userName);
+      newRoute.collapse = injectUserNameToRoutes(newRoute.collapse, userRole);
     }
 
     return newRoute;
@@ -78,6 +81,7 @@ export default function App() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userRecoil);
+  const setRegions = useSetRecoilState(regionsRecoil);
 
   // Cache for the rtl
   useMemo(() => {
@@ -130,14 +134,13 @@ export default function App() {
     });
 
   const routesWithUserName = useMemo(() => {
-    if (!user?.name) return routes;
-    return injectUserNameToRoutes(routes, user.name);
+    if (!user?.role) return routes;
+    return injectUserNameToRoutes(routes, user.role);
   }, [user]);
 
   const { mutate: fetchMe, isPending } = useMutation({
     mutationFn: meQuery,
     onSuccess: ({ data }) => {
-      console.log("✅ data", data);
       setUser({ ...data, isLoading: false });
 
       if (pathname === "/authentication/sign-in") {
@@ -150,6 +153,12 @@ export default function App() {
     },
   });
 
+  const { data: dataRegions } = useQuery({
+    enabled: !!user._id,
+    queryKey: [QueryKey.configField],
+    queryFn: () => getListRegionsQuery({ ...DEFAULT_FILTER, limit: 9999 }),
+  });
+
   // Setting the dir attribute for the body element
   useEffect(() => {
     document.body.setAttribute("dir", direction);
@@ -160,6 +169,12 @@ export default function App() {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
+
+  useEffect(() => {
+    if (dataRegions?.data?.docs?.length > 0) {
+      setRegions(dataRegions?.data?.docs);
+    }
+  }, [dataRegions]);
 
   useEffect(() => {
     fetchMe();

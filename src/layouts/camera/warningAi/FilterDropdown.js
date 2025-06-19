@@ -105,7 +105,7 @@ export function FilterDropdown({
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
-                    placeholder="Tìm kiếm theo tên đường, camera"
+                    placeholder="Tìm kiếm theo biển số xe, vị trí,..."
                     className="pl-10 text-sm"
                     value={filters.searchQuery}
                     onChange={(e) =>
@@ -115,39 +115,28 @@ export function FilterDropdown({
                 </div>
               </div>
 
-              {/* District Filter */}
               <div className="space-y-2">
                 <label className="text-xs font-medium text-gray-700 uppercase tracking-wide">
-                  QUẬN/HUYỆN
+                  Loại vi phạm
                 </label>
                 <Select
-                  value={filters.districtFilter}
-                  onValueChange={(value) =>
-                    handleFilterChange("districtFilter", value)
-                  }
+                  value={filters.type}
+                  onValueChange={(value) => handleFilterChange("type", value)}
                 >
                   <SelectTrigger
                     className="text-sm"
                     onClick={handleSelectClick}
                   >
-                    <SelectValue placeholder="Chọn quận/huyện" />
+                    <SelectValue placeholder="Chọn trạng thái" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Tất cả quận/huyện</SelectItem>
-                    <SelectItem value="hoankiem">Quận Hoàn Kiếm</SelectItem>
-                    <SelectItem value="dongda">Quận Đống Đa</SelectItem>
-                    <SelectItem value="haibatrung">
-                      Quận Hai Bà Trưng
-                    </SelectItem>
-                    <SelectItem value="caugiay">Quận Cầu Giấy</SelectItem>
-                    <SelectItem value="badinh">Quận Ba Đình</SelectItem>
-                    <SelectItem value="tayho">Quận Tây Hồ</SelectItem>
-                    <SelectItem value="hoangmai">Quận Hoàng Mai</SelectItem>
-                    <SelectItem value="longbien">Quận Long Biên</SelectItem>
-                    <SelectItem value="thanxuan">Quận Thanh Xuân</SelectItem>
-                    <SelectItem value="namtuliem">Quận Nam Từ Liêm</SelectItem>
-                    <SelectItem value="bactuliem">Quận Bắc Từ Liêm</SelectItem>
-                    <SelectItem value="hadong">Quận Hà Đông</SelectItem>
+                    <SelectItem value="all">Tất cả</SelectItem>
+                    <SelectItem value="1">Vượt đèn đỏ</SelectItem>
+                    <SelectItem value="2">Lấn làn</SelectItem>
+                    <SelectItem value="3">Xe quay đầu cấm</SelectItem>
+                    <SelectItem value="4">Đi sai chiều</SelectItem>
+                    <SelectItem value="5">Không đội mũ bảo hiểm</SelectItem>
+                    <SelectItem value="6">Dừng đỗ sai quy định</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -155,26 +144,23 @@ export function FilterDropdown({
               {/* Time Filter */}
               <div className="space-y-2">
                 <label className="text-xs font-medium text-gray-700 uppercase tracking-wide">
-                  THỜI GIAN
+                  Trạng thái
                 </label>
                 <Select
-                  value={filters.timeFilter}
-                  onValueChange={(value) =>
-                    handleFilterChange("timeFilter", value)
-                  }
+                  value={filters.status}
+                  onValueChange={(value) => handleFilterChange("status", value)}
                 >
                   <SelectTrigger
                     className="text-sm"
                     onClick={handleSelectClick}
                   >
-                    <SelectValue placeholder="Chọn thời gian" />
+                    <SelectValue placeholder="Chọn trạng thái" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="today">Hôm nay</SelectItem>
-                    <SelectItem value="7days">7 ngày qua</SelectItem>
-                    <SelectItem value="month">Tháng này</SelectItem>
-                    <SelectItem value="quarter">Quý này</SelectItem>
-                    <SelectItem value="year">Năm này</SelectItem>
+                    <SelectItem value="all">Tất cả</SelectItem>
+                    <SelectItem value="1">Đang xử lý</SelectItem>
+                    <SelectItem value="2">Đã ghi nhận</SelectItem>
+                    <SelectItem value="3">Cảnh báo gửi đi</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

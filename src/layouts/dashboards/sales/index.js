@@ -141,10 +141,11 @@ export default function Sales() {
         <h2 className="text-xl font-semibold text-left ">
           Theo dõi lưu lượng, vi phạm và tình hình giao thông
         </h2>
-        <div className="sm:flex sm:w-full sm:justify-end">
+        <div className="flex items-center gap-2.5 justify-end sm:flex-col sm:w-full  ">
           <FilterDropdown
             onApplyFilters={handleApplyFilters}
             initialFilters={activeFilters}
+            className="sm:w-full"
           />
         </div>
       </div>
