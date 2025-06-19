@@ -17,6 +17,7 @@ import { showErrorToast } from "components/Toast";
 import { ErrorMessage } from "service/message";
 import { useSetRecoilState } from "recoil";
 import { userRecoil } from "service/recoil/user";
+import { message } from "@/components/ui/message";
 
 function Basic() {
   const {
@@ -40,7 +41,7 @@ function Basic() {
       navigate("/dashboards/overview");
     },
     onError: (err) => {
-      showErrorToast(ErrorMessage[err.message]);
+      message.error(ErrorMessage[err.message] || err.message);
     },
   });
 

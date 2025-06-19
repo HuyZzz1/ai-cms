@@ -5,14 +5,19 @@ import CameraCard from "./CameraCard";
 import DashboardLayout from "@/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "@/examples/Navbars/DashboardNavbar";
 import { FilterDropdown } from "./FilterDropdown";
-import ModalWithCameraForm from "./modal/ModalWithCameraForm";
+import CreateCameraForm from "./modal/CreateCameraForm";
+import { QueryKey } from "@/service/constant";
+import { useQuery } from "@tanstack/react-query";
+import { getListCameraQuery } from "@/service/api/camera";
+import { Pagination } from "@/components/ui/pagination";
+import { CameraSkeleton } from "./CameraSkeleton";
 
 export default function CameraManagement() {
   const modalRef = useRef();
-
+  const [page, setPage] = useState(1);
   const [activeFilters, setActiveFilters] = useState({
     searchQuery: "",
-    districtFilter: "all",
+    regionId: "all",
     status: "all",
   });
 
@@ -21,105 +26,33 @@ export default function CameraManagement() {
     setActiveFilters(filters);
   };
 
-  const cameras = [
-    {
-      id: "CAM_0975",
-      status: "Tốt",
-      location: "Ngã tư Giải Phóng – Đại La",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:40:00Z",
-    },
-    {
-      id: "CAM_0976",
-      status: "Tốt",
-      location: "Cổng công viên Thống Nhất",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:38:20Z",
-    },
-    {
-      id: "CAM_0979",
-      status: "Cảnh báo AI",
-      location: "Ngã tư Láng – Nguyễn Chí Thanh",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:38:12Z",
-    },
-    {
-      id: "CAM_0980",
-      status: "Đang kiểm tra",
-      location: "Cầu Chương Dương",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:35:15Z",
-    },
-    {
-      id: "CAM_0981",
-      status: "Tốt",
-      location: "Phố Hàng Bài – Hoàn Kiếm",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:42:30Z",
-    },
-    {
-      id: "CAM_0982",
-      status: "Mất tín hiệu",
-      location: "Ngã tư Đội Cấn – Ba Đình",
-      image: "/placeholder.svg?height=300&width=500&text=No+Signal",
-      last_updated: "2025-06-03T09:20:45Z",
-    },
-    {
-      id: "CAM_0983",
-      status: "Tốt",
-      location: "Cầu vượt Thái Hà",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:41:12Z",
-    },
-    {
-      id: "CAM_0984",
-      status: "Tốt",
-      location: "Ngã tư Cầu Giấy",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:39:28Z",
-    },
-    {
-      id: "CAM_0985",
-      status: "Cảnh báo AI",
-      location: "Phố cổ Hà Nội",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:37:55Z",
-    },
-    {
-      id: "CAM_0986",
-      status: "Tốt",
-      location: "Cầu Long Biên",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:43:10Z",
-    },
-    {
-      id: "CAM_0987",
-      status: "Đang kiểm tra",
-      location: "Ngã tư Nguyễn Trãi – Khuất Duy Tiến",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:25:33Z",
-    },
-    {
-      id: "CAM_0988",
-      status: "Tốt",
-      location: "Cầu vượt Hoàng Minh Giám",
-      image: "/placeholder.svg?height=300&width=500&text=Live+Stream",
-      last_updated: "2025-06-03T09:44:02Z",
-    },
-  ];
+  const { data, isLoading } = useQuery({
+    queryKey: [QueryKey.cameras, activeFilters, page],
+    queryFn: () => {
+      const filter = {};
+      if (activeFilters.regionId !== "all") {
+        filter.regionId = activeFilters.regionId;
+      }
+      if (activeFilters.status !== "all") {
+        filter.status = activeFilters.status;
+      }
 
-  // Filter cameras based on search term, area, and status
-  const filteredCameras = cameras.filter((camera) => {
-    const matchesSearch = camera.id
-      .toLowerCase()
-      .includes(activeFilters.searchQuery.toLowerCase());
+      const queryParams = {
+        page,
+        limit: 12,
+        ...(activeFilters.searchQuery && { search: activeFilters.searchQuery }),
+        ...(Object.keys(filter).length > 0 && { filter }),
+      };
 
-    return matchesSearch;
+      return getListCameraQuery(queryParams);
+    },
   });
+
+  const cameraList = data?.docs || [];
 
   return (
     <>
-      <ModalWithCameraForm ref={modalRef} />
+      <CreateCameraForm ref={modalRef} />
       <DashboardLayout>
         <DashboardNavbar breadcrumbRoute={["Giám sát", "Giám sát trực tiếp"]} />
         <div className="flex items-center justify-between mb-6 sm:flex-col sm:items-start sm:gap-2 w-full h-full">
@@ -145,24 +78,40 @@ export default function CameraManagement() {
         <main>
           <div className="mb-4">
             <p className="text-sm text-gray-600">
-              Hiển thị {filteredCameras.length} / {cameras.length} camera
+              Hiển thị {cameraList.length} / {data?.docs.length} camera
             </p>
           </div>
 
-          {/* Camera grid */}
-          <div className="grid grid-cols-1 sm-min:grid-cols-2 lg-min:grid-cols-3 xl-min:grid-cols-4 gap-3 sm-min:gap-4">
-            {filteredCameras.map((camera) => (
-              <CameraCard key={camera.id} camera={camera} />
-            ))}
-          </div>
-
-          {/* No results */}
-          {filteredCameras.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500">
-                Không tìm thấy camera nào phù hợp với bộ lọc
-              </p>
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm-min:grid-cols-2 lg-min:grid-cols-3 xl-min:grid-cols-4 gap-3 sm-min:gap-4">
+              {Array.from({ length: 12 }).map((_, index) => (
+                <CameraSkeleton key={index} />
+              ))}
             </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm-min:grid-cols-2 lg-min:grid-cols-3 xl-min:grid-cols-4 gap-3 sm-min:gap-4">
+                {cameraList.map((camera) => (
+                  <CameraCard key={camera.id} camera={camera} />
+                ))}
+              </div>
+
+              {cameraList.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">
+                    Không tìm thấy camera nào phù hợp với bộ lọc
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+
+          {data?.totalPages > 1 && (
+            <Pagination
+              page={data.page}
+              totalPages={data.totalPages}
+              onPageChange={(newPage) => setPage(newPage)}
+            />
           )}
         </main>
       </DashboardLayout>

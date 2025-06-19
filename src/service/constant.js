@@ -12,6 +12,7 @@ export const RoleName = {
 
 export const QueryKey = {
   regions: "regions",
+  cameras: "cameras",
 };
 
 export const DEFAULT_FILTER = {

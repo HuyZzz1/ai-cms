@@ -48,6 +48,8 @@ import SignIn from "layouts/authentication/sign-in";
 import { DEFAULT_FILTER, QueryKey, RoleName } from "./service/constant";
 import { regionsRecoil } from "./service/recoil/regions";
 import { getListRegionsQuery } from "./service/api/camera";
+import { Toaster } from "sonner";
+import { ConfirmDialogProvider } from "./components/ConfirmDialogProvider";
 
 const injectUserNameToRoutes = (routes, userRole) =>
   routes.map((route) => {
@@ -190,23 +192,26 @@ export default function App() {
 
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
-      <Toast />
-      <CssBaseline />
-      {layout === "dashboard" && (
-        <>
-          <Sidenav
-            color={sidenavColor}
-            routes={routesWithUserName}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
-        </>
-      )}
-      <Routes>
-        {getRoutes(routesWithUserName)}
-        <Route path="/authentication/sign-in" element={<SignIn />} />
-        <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
-      </Routes>
+      <ConfirmDialogProvider>
+        <Toaster position="top-right" richColors closeButton />
+        <Toast />
+        <CssBaseline />
+        {layout === "dashboard" && (
+          <>
+            <Sidenav
+              color={sidenavColor}
+              routes={routesWithUserName}
+              onMouseEnter={handleOnMouseEnter}
+              onMouseLeave={handleOnMouseLeave}
+            />
+          </>
+        )}
+        <Routes>
+          {getRoutes(routesWithUserName)}
+          <Route path="/authentication/sign-in" element={<SignIn />} />
+          <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+        </Routes>
+      </ConfirmDialogProvider>
     </ThemeProvider>
   );
 }

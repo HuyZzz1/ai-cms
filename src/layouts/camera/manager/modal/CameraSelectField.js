@@ -3,11 +3,6 @@ import { Controller } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
 const CameraSelectField = ({ name, label, control, errors, options }) => {
-  const formattedOptions = options?.map((opt) => ({
-    value: opt._id,
-    label: opt.name,
-  }));
-
   return (
     <div className="space-y-1">
       <label className="block text-sm font-medium text-gray-700">{label}</label>
@@ -20,10 +15,8 @@ const CameraSelectField = ({ name, label, control, errors, options }) => {
           <Select
             {...field}
             isSearchable={false}
-            options={formattedOptions}
-            value={
-              formattedOptions.find((opt) => opt.value === field.value) || null
-            }
+            options={options}
+            value={options.find((opt) => opt.value === field.value) || null}
             onChange={(selected) => field.onChange(selected?.value)}
             placeholder=""
             unstyled

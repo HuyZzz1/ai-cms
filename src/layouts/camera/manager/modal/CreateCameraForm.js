@@ -1,17 +1,21 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
 import Modal from "react-modal";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRecoilValue } from "recoil";
 import { regionsRecoil } from "@/service/recoil/regions";
 import CameraInputField from "./CameraInputField";
 import CameraSelectField from "./CameraSelectField";
 import { createCameraQuery } from "@/service/api/camera";
 import { Button } from "@/components/ui/button";
+import { message } from "@/components/ui/message";
+import { ErrorMessage } from "@/service/message";
+import { QueryKey } from "@/service/constant";
 
-const ModalWithCameraForm = forwardRef(({}, ref) => {
+const CreateCameraForm = forwardRef(({}, ref) => {
   const regionList = useRecoilValue(regionsRecoil);
   const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const {
     control,
@@ -26,25 +30,25 @@ const ModalWithCameraForm = forwardRef(({}, ref) => {
       regionId: "",
       lat: "",
       lng: "",
-      isAI: false,
-      lastChecked: "",
       status: "active",
     },
   });
 
-  console.log("regionList", regionList);
-
   const { mutate, isPending } = useMutation({
     mutationFn: createCameraQuery,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKey.cameras] });
+      message.success("Thêm mới camera thành công");
       onClose();
     },
-    onError: () => {
-      alert("Tạo camera thất bại");
+    onError: (err) => {
+      message.error(ErrorMessage[err.message] || err.message);
     },
   });
 
   const onSubmit = (data) => {
+    console.log("data", data);
+
     data.lat = parseFloat(data.lat);
     data.lng = parseFloat(data.lng);
     mutate(data);
@@ -87,12 +91,15 @@ const ModalWithCameraForm = forwardRef(({}, ref) => {
           label="Khu vực"
           control={control}
           errors={errors}
-          options={regionList}
+          options={regionList?.map((opt) => ({
+            value: opt._id,
+            label: opt.name,
+          }))}
         />
 
         <CameraInputField
           name="location"
-          label="Địa chỉ"
+          label="Vị trí"
           control={control}
           errors={errors}
         />
@@ -118,10 +125,7 @@ const ModalWithCameraForm = forwardRef(({}, ref) => {
           >
             <span>Thêm mới</span>
           </Button>
-          <Button
-            onClick={onClose}
-            className=" !bg-transparent text-black flex items-center gap-1 sm:w-full"
-          >
+          <Button variant="outline" onClick={onClose}>
             <span>Đóng</span>
           </Button>
         </div>
@@ -130,4 +134,4 @@ const ModalWithCameraForm = forwardRef(({}, ref) => {
   );
 });
 
-export default ModalWithCameraForm;
+export default CreateCameraForm;

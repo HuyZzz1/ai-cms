@@ -9,6 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Filter, ChevronDown, Search } from "lucide-react";
+import { useRecoilValue } from "recoil";
+import { regionsRecoil } from "@/service/recoil/regions";
 
 export function FilterDropdown({
   onApplyFilters,
@@ -17,18 +19,21 @@ export function FilterDropdown({
 }) {
   const defaultFilters = {
     searchQuery: "",
-    districtFilter: "all",
-    timeFilter: "today",
+    regionId: "all",
+    status: "all",
   };
 
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [filters, setFilters] = useState(initialFilters || defaultFilters);
   const dropdownRef = useRef(null);
 
+  const regionList = useRecoilValue(regionsRecoil);
+
+  console.log("regionList", regionList);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        // Kiểm tra xem có phải đang click vào Select dropdown không
         const isSelectDropdown =
           event.target.closest("[data-radix-popper-content-wrapper]") ||
           event.target.closest("[data-radix-select-content]") ||
@@ -105,7 +110,7 @@ export function FilterDropdown({
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
-                    placeholder="Tìm kiếm theo ID hoặc khu vực"
+                    placeholder="Tìm kiếm mã camera"
                     className="pl-10 text-sm"
                     value={filters.searchQuery}
                     onChange={(e) =>
@@ -121,33 +126,25 @@ export function FilterDropdown({
                   Khu vực
                 </label>
                 <Select
-                  value={filters.districtFilter}
+                  value={filters.regionId}
                   onValueChange={(value) =>
-                    handleFilterChange("districtFilter", value)
+                    handleFilterChange("regionId", value)
                   }
                 >
                   <SelectTrigger
                     className="text-sm"
                     onClick={handleSelectClick}
                   >
-                    <SelectValue placeholder="Chọn quận/huyện" />
+                    <SelectValue placeholder="Chọn khu vực" />
                   </SelectTrigger>
+
                   <SelectContent>
-                    <SelectItem value="all">Tất cả quận/huyện</SelectItem>
-                    <SelectItem value="hoankiem">Quận Hoàn Kiếm</SelectItem>
-                    <SelectItem value="dongda">Quận Đống Đa</SelectItem>
-                    <SelectItem value="haibatrung">
-                      Quận Hai Bà Trưng
-                    </SelectItem>
-                    <SelectItem value="caugiay">Quận Cầu Giấy</SelectItem>
-                    <SelectItem value="badinh">Quận Ba Đình</SelectItem>
-                    <SelectItem value="tayho">Quận Tây Hồ</SelectItem>
-                    <SelectItem value="hoangmai">Quận Hoàng Mai</SelectItem>
-                    <SelectItem value="longbien">Quận Long Biên</SelectItem>
-                    <SelectItem value="thanxuan">Quận Thanh Xuân</SelectItem>
-                    <SelectItem value="namtuliem">Quận Nam Từ Liêm</SelectItem>
-                    <SelectItem value="bactuliem">Quận Bắc Từ Liêm</SelectItem>
-                    <SelectItem value="hadong">Quận Hà Đông</SelectItem>
+                    <SelectItem value="all">Tất cả khu vực</SelectItem>
+                    {regionList?.map((region) => (
+                      <SelectItem key={region._id} value={region._id}>
+                        {region.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -159,9 +156,7 @@ export function FilterDropdown({
                 </label>
                 <Select
                   value={filters.status}
-                  onValueChange={(value) =>
-                    handleFilterChange("timeFilter", value)
-                  }
+                  onValueChange={(value) => handleFilterChange("status", value)}
                 >
                   <SelectTrigger
                     className="text-sm"
@@ -171,9 +166,9 @@ export function FilterDropdown({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="1">Hoạt động tốt</SelectItem>
-                    <SelectItem value="2">Đang kiểm tra</SelectItem>
-                    <SelectItem value="3">Mất tín hiệu / Cảnh báo</SelectItem>
+                    <SelectItem value="active">Đang hoạt động</SelectItem>
+                    <SelectItem value="inactive">Không hoạt động</SelectItem>
+                    <SelectItem value="error">Lỗi</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
