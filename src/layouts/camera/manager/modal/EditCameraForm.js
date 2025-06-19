@@ -99,7 +99,7 @@ const EditCameraForm = forwardRef(({}, ref) => {
             },
             {
               value: "inactive",
-              label: "Chưa hoạt động",
+              label: "Không hoạt động",
             },
             {
               value: "error",
