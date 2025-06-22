@@ -313,18 +313,18 @@ export default function TrafficViolationsTable({
         onRequestClose={() => setModalOpen(false)}
         contentLabel="Tạo mới Camera"
         overlayClassName="fixed inset-0 bg-black/40 flex items-start justify-center z-[9999]"
-        className="w-full max-w-xl bg-white rounded-lg p-6 shadow-xl mx-auto mt-20 outline-none z-[10000]"
+        className="w-full max-w-2xl bg-white rounded-lg p-6 shadow-xl mx-auto mt-20 outline-none z-[10000]"
       >
         <h2 className="text-lg font-semibold mb-4">Hình ảnh vi phạm</h2>
 
         {selectedImages.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex items-center gap-2.5 flex-wrap">
             {selectedImages.map((src, idx) => (
               <img
                 key={idx}
                 src={src}
                 alt={`evidence-${idx}`}
-                className="w-full h-auto max-h-[400px] object-contain border rounded cursor-zoom-in"
+                className="w-[250px] h-[150px] object-cover border rounded cursor-zoom-in"
                 onClick={() => {
                   setPhotoIndex(idx);
                   setLightboxOpen(true);

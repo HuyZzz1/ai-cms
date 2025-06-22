@@ -116,6 +116,9 @@ export default function TrafficViolationsTable({
             <Table className="min-w-[800px]">
               <TableHeader>
                 <TableRow className="bg-gray-50">
+                  <TableHead className="text-center font-semibold">
+                    STT
+                  </TableHead>
                   <TableHead className="font-semibold whitespace-nowrap">
                     MÃ THIẾT BỊ
                   </TableHead>
@@ -141,7 +144,10 @@ export default function TrafficViolationsTable({
               </TableHeader>
               <TableBody>
                 {currentData.map((device, index) => (
-                  <TableRow key={index} className="hover:bg-gray-50">
+                  <TableRow key={index + 1} className="hover:bg-gray-50">
+                    <TableCell className="text-center font-medium">
+                      {device.stt}
+                    </TableCell>
                     <TableCell className="text-sm font-medium text-blue-600 p-4">
                       {device.deviceId}
                     </TableCell>

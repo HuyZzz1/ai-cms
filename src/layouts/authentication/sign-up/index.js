@@ -1,23 +1,16 @@
 import { useForm, Controller } from "react-hook-form";
 import Card from "@mui/material/Card";
-
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { loginQuery } from "service/api/auth";
-import { setCookie } from "service/cookies";
-import { CookieKey } from "service/cookies";
-import { showErrorToast } from "components/Toast";
 import { ErrorMessage } from "service/message";
-import { useSetRecoilState } from "recoil";
-import { userRecoil } from "service/recoil/user";
 import { message } from "@/components/ui/message";
+import { registerTenantsQuery } from "@/service/api/auth";
 
 function Basic() {
   const {
@@ -26,19 +19,18 @@ function Basic() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: "admin@gmail.com",
-      password: "123123",
+      email: "",
+      password: "",
+      name: "",
     },
   });
   const navigate = useNavigate();
-  const setUser = useSetRecoilState(userRecoil);
 
-  const { mutate: login, isPending } = useMutation({
-    mutationFn: loginQuery,
-    onSuccess: ({ data }) => {
-      setCookie(CookieKey.ACCESS_TOKEN, data.access_token);
-      setUser({ ...data.user, isLoading: false });
-      navigate("/dashboards/overview");
+  const { mutate, isPending } = useMutation({
+    mutationFn: registerTenantsQuery,
+    onSuccess: () => {
+      message.success("Tạo tài khoản thành công");
+      navigate("/authentication/sign-in");
     },
     onError: (err) => {
       message.error(ErrorMessage[err.message] || err.message);
@@ -46,7 +38,7 @@ function Basic() {
   });
 
   const onSubmit = (values) => {
-    login(values);
+    mutate({ ...values, plan: "pro" });
   };
 
   return (
@@ -62,13 +54,39 @@ function Basic() {
           mb={1}
           textAlign="center"
         >
-          <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+          <MDTypography variant="h4" fontWeight="medium" color="white">
             Đăng kí
           </MDTypography>
         </MDBox>
 
         <MDBox pt={4} pb={3} px={3}>
           <form onSubmit={handleSubmit(onSubmit)}>
+            <MDBox mb={2}>
+              <Controller
+                name="name"
+                control={control}
+                rules={{
+                  required: "Vui lòng nhập tên",
+                  pattern: {
+                    message: "Vui lòng nhập tên",
+                  },
+                }}
+                render={({ field }) => (
+                  <MDInput
+                    {...field}
+                    label="Tên"
+                    fullWidth
+                    error={!!errors.name}
+                    helperText={errors.name?.message}
+                    sx={{
+                      "& .MuiFormHelperText-root": {
+                        color: "error.main",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </MDBox>
             <MDBox mb={2}>
               <Controller
                 name="email"
@@ -134,6 +152,18 @@ function Basic() {
               </MDButton>
             </MDBox>
           </form>
+          <div className="flex items-center justify-center pt-2.5">
+            <p className="text-sm">
+              Đã có tài khoản?{" "}
+              <span
+                className="underline font-semibold cursor-pointer"
+                onClick={() => navigate("/authentication/sign-in")}
+              >
+                {" "}
+                Đăng nhập
+              </span>
+            </p>
+          </div>
         </MDBox>
       </Card>
     </BasicLayout>

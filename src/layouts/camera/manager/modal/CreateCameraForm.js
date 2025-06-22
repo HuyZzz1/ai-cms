@@ -47,8 +47,6 @@ const CreateCameraForm = forwardRef(({}, ref) => {
   });
 
   const onSubmit = (data) => {
-    console.log("data", data);
-
     data.lat = parseFloat(data.lat);
     data.lng = parseFloat(data.lng);
     mutate(data);

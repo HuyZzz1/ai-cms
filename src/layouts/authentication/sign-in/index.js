@@ -26,8 +26,8 @@ function Basic() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: "admin@gmail.com",
-      password: "123123",
+      email: "",
+      password: "",
     },
   });
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ function Basic() {
           mb={1}
           textAlign="center"
         >
-          <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+          <MDTypography variant="h4" fontWeight="medium" color="white">
             Đăng nhập
           </MDTypography>
         </MDBox>
@@ -134,6 +134,19 @@ function Basic() {
               </MDButton>
             </MDBox>
           </form>
+
+          <div className="flex items-center justify-center pt-2.5">
+            <p className="text-sm">
+              Bạn chưa có tài khoản?{" "}
+              <span
+                className="underline font-semibold cursor-pointer"
+                onClick={() => navigate("/authentication/sign-up")}
+              >
+                {" "}
+                Tạo tài khoản
+              </span>
+            </p>
+          </div>
         </MDBox>
       </Card>
     </BasicLayout>

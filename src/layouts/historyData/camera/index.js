@@ -64,7 +64,8 @@ export default function HistoryCamera() {
 
   const formattedData = useMemo(() => {
     return (
-      data?.docs?.map((item) => ({
+      data?.docs?.map((item, index) => ({
+        stt: (currentPage - 1) * 10 + index + 1,
         deviceId: item.device,
         location: item.location,
         area: item.regionId?.name || "-",
@@ -73,7 +74,7 @@ export default function HistoryCamera() {
         lastUpdate: dayjs(item.updatedAt || item.createdAt).format(
           "DD/MM/YYYY HH:mm"
         ),
-        aiDetection: item.hasAi ? "Có" : "Không",
+        aiDetection: item.isAI ? "Có" : "Không",
       })) || []
     );
   }, [data]);
@@ -88,7 +89,7 @@ export default function HistoryCamera() {
       "Tọa độ": item.coordinates,
       "Trạng thái": getStatusText(item.status),
       "Lần cập nhật cuối": item.lastUpdate,
-      AI: item.isAI,
+      AI: item.isAI ? "Có" : "Không",
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);

@@ -21,6 +21,7 @@ import { useState, useEffect } from "react";
 import DashboardLayout from "@/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "@/examples/Navbars/DashboardNavbar";
 import { FilterDropdown } from "./components/FilterDropdown";
+import TrafficHotpots from "./components/TrafficHotpots";
 
 const vehicleTrafficData = [
   { day: "Thứ 2", vehicles: 28500 },
@@ -303,49 +304,13 @@ export default function Analytics() {
         </div>
 
         {/* Traffic Hotspots */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Các điểm nóng giao thông</h2>
-          <div className="grid grid-cols-3 md:grid-cols-1 gap-6">
-            {trafficHotspots.map((hotspot, index) => (
-              <Card
-                key={index}
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-              >
-                <CardContent className="p-0">
-                  <img
-                    src="/placeholder.svg"
-                    alt={hotspot.name}
-                    width={400}
-                    height={200}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg mb-2">
-                      {hotspot.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-3">
-                      {hotspot.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-500">
-                        Vi phạm hôm nay: {hotspot.violations}
-                      </span>
-                      <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">
-                        Điểm nóng
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+        <TrafficHotpots />
 
         {/* District Violations and Map */}
         <div className="grid grid-cols-2 md:grid-cols-1 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Thống kê vi phạm theo quận</CardTitle>
+              <CardTitle>Thống kê vi phạm</CardTitle>
               <CardDescription>
                 Dữ liệu vi phạm và mức phạt ước tính
               </CardDescription>

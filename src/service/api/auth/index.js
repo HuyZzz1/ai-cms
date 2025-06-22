@@ -7,3 +7,7 @@ export const loginQuery = async (params) => {
 export const meQuery = async () => {
   return await http.get("/v1/users/profile");
 };
+
+export const registerTenantsQuery = async (params) => {
+  return await http.post("/v1/tenants", params);
+};

@@ -72,7 +72,7 @@ export default function CameraCard({ camera }) {
     <>
       <EditCameraForm ref={editModal} />
       <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 border">
-        <div className="relative aspect-video bg-gray-100">
+        <div className="relative aspect-video bg-gray-100 pointer-events-none">
           <ReactPlayer
             url={camera.url}
             width="100%"
