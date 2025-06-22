@@ -179,15 +179,19 @@ export default function App() {
     }
   }, [dataRegions]);
 
+  // 1. Gọi fetchMe một lần khi load app nếu chưa có user
   useEffect(() => {
     const isAuthPage =
       pathname === "/authentication/sign-in" ||
       pathname === "/authentication/sign-up";
 
-    if (!isAuthPage) {
+    if (!isAuthPage && !user?._id) {
       fetchMe();
     }
+  }, []);
 
+  // 2. Nếu đã có user và vẫn đang ở trang sign-in, thì điều hướng
+  useEffect(() => {
     if (user?._id && pathname === "/authentication/sign-in") {
       navigate("/dashboards/overview");
     }
