@@ -50,6 +50,7 @@ import { regionsRecoil } from "./service/recoil/regions";
 import { getListRegionsQuery } from "./service/api/camera";
 import { Toaster } from "sonner";
 import { ConfirmDialogProvider } from "./components/ConfirmDialogProvider";
+import SignUp from "layouts/authentication/sign-up";
 
 const injectUserNameToRoutes = (routes, userRole) =>
   routes.map((route) => {
@@ -179,8 +180,18 @@ export default function App() {
   }, [dataRegions]);
 
   useEffect(() => {
-    fetchMe();
-  }, []);
+    const isAuthPage =
+      pathname === "/authentication/sign-in" ||
+      pathname === "/authentication/sign-up";
+
+    if (!isAuthPage) {
+      fetchMe();
+    }
+
+    if (user?._id && pathname === "/authentication/sign-in") {
+      navigate("/dashboards/overview");
+    }
+  }, [pathname, user?._id]);
 
   if (isPending) {
     return (
@@ -209,6 +220,7 @@ export default function App() {
         <Routes>
           {getRoutes(routesWithUserName)}
           <Route path="/authentication/sign-in" element={<SignIn />} />
+          <Route path="/authentication/sign-up" element={<SignUp />} />
           <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
         </Routes>
       </ConfirmDialogProvider>

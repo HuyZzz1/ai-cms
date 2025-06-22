@@ -88,7 +88,7 @@ export default function HistoryCamera() {
       "Tọa độ": item.coordinates,
       "Trạng thái": getStatusText(item.status),
       "Lần cập nhật cuối": item.lastUpdate,
-      AI: item.aiDetection,
+      AI: item.isAI,
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);

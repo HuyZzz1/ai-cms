@@ -379,7 +379,7 @@ export default function Analytics() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Bản đồ mật độ giao thông TP Hà Nội</CardTitle>
+              <CardTitle>Bản đồ mật độ giao thông</CardTitle>
               <CardDescription>
                 Các điểm vi phạm hiển thị bằng chấm đỏ, quy mô theo số lỗi
               </CardDescription>
