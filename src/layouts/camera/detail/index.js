@@ -17,8 +17,6 @@ export default function CameraDetail() {
     enabled: !!id,
   });
 
-  console.log("data", data);
-
   const getStatusColor = (status) => {
     switch (status) {
       case "active":
@@ -105,12 +103,10 @@ export default function CameraDetail() {
             <p className="font-medium text-md sm:text-base mb-1">
               Mã camera: {data?.device}
             </p>
-            <p className="text-sm sm:text-sm  font-medium line-clamp-2">
+            <p className="text-sm  font-medium ">
               Khu vực: {data?.districtId?.name}
             </p>
-            <p className="text-sm sm:text-sm text-gray-600 line-clamp-2">
-              Vị trí: {data?.location}
-            </p>
+            <p className="text-sm font-medium ">Vị trí: {data?.location}</p>
             <p className="text-sm text-gray-600 mt-1">
               Cập nhật: {dayjs(data?.updatedAt).format("DD/MM/YYYY HH:mm")}
             </p>

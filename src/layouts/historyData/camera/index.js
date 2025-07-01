@@ -17,7 +17,7 @@ export default function HistoryCamera() {
 
   const [activeFilters, setActiveFilters] = useState({
     searchQuery: "",
-    regionId: "all",
+    districtId: "all",
     status: "all",
   });
 
@@ -33,8 +33,8 @@ export default function HistoryCamera() {
     queryKey: [QueryKey.cameras, activeFilters, currentPage],
     queryFn: () => {
       const filter = {};
-      if (activeFilters.regionId !== "all") {
-        filter.regionId = activeFilters.regionId;
+      if (activeFilters.districtId !== "all") {
+        filter.districtId = activeFilters.districtId;
       }
       if (activeFilters.status !== "all") {
         filter.status = activeFilters.status;
@@ -68,7 +68,7 @@ export default function HistoryCamera() {
         stt: (currentPage - 1) * 10 + index + 1,
         deviceId: item.device,
         location: item.location,
-        area: item.regionId?.name || "-",
+        area: item.districtId?.name || "-",
         coordinates: `${item.lat}, ${item.lng}`,
         status: item.status,
         lastUpdate: dayjs(item.updatedAt || item.createdAt).format(

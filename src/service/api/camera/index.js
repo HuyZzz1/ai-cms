@@ -28,3 +28,7 @@ export const getListDistrictsQuery = async (params) => {
 export const getCameraDetailQuery = async (id) => {
   return await http.get(`/v1/cameras/${id}`);
 };
+
+export const getViolationsByDistrictQuery = async () => {
+  return await http.get(`/v1/dashboard/violations-by-district`);
+};

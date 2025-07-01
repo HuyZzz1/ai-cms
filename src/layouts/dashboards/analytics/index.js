@@ -17,11 +17,13 @@ import {
   Tooltip,
 } from "recharts";
 import { TrendingUp, Car, AlertTriangle, Camera } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import DashboardLayout from "@/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "@/examples/Navbars/DashboardNavbar";
 import { FilterDropdown } from "./components/FilterDropdown";
 import TrafficHotpots from "./components/TrafficHotpots";
+import ViolationsByDistrict from "./components/ViolationsByDistrict";
+import MapCamera from "./components/MapCamera";
 
 const vehicleTrafficData = [
   { day: "Thứ 2", vehicles: 28500 },
@@ -55,43 +57,6 @@ const cameraPerformanceData = [
   { month: "T10", cameras: 162 },
   { month: "T11", cameras: 165 },
   { month: "T12", cameras: 167 },
-];
-
-const districtViolations = [
-  {
-    district: "Hoàn Kiếm",
-    violations: 1240,
-    fine: "372.000.000",
-    rate: "8.2%",
-  },
-  { district: "Đống Đa", violations: 950, fine: "290.000.000", rate: "6.7%" },
-  {
-    district: "Hai Bà Trưng",
-    violations: 880,
-    fine: "276.000.000",
-    rate: "6.1%",
-  },
-  { district: "Cầu Giấy", violations: 600, fine: "180.000.000", rate: "4.0%" },
-  { district: "Long Biên", violations: 540, fine: "162.000.000", rate: "3.6%" },
-  { district: "Ba Đình", violations: 520, fine: "156.000.000", rate: "3.4%" },
-];
-
-const trafficHotspots = [
-  {
-    name: "Ngã tư Giải Phóng – Đại La",
-    description: "Mật độ cao, thường có vi phạm vượt đèn đỏ và lấn làn.",
-    violations: 89,
-  },
-  {
-    name: "Cầu Chương Dương",
-    description: "Ùn tắc giờ cao điểm. Hôm nay ghi nhận 42 lỗi.",
-    violations: 42,
-  },
-  {
-    name: "Ngã 6 Ô Chợ Dừa",
-    description: "Nút giao phức tạp. Cần bổ sung cảnh báo thông minh.",
-    violations: 67,
-  },
 ];
 
 export default function Analytics() {
@@ -308,79 +273,8 @@ export default function Analytics() {
 
         {/* District Violations and Map */}
         <div className="grid grid-cols-2 md:grid-cols-1 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Thống kê vi phạm</CardTitle>
-              <CardDescription>
-                Dữ liệu vi phạm và mức phạt ước tính
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-4 gap-4 text-sm font-medium text-gray-600 border-b pb-2">
-                  <span>Quận/Huyện</span>
-                  <span>Vi phạm</span>
-                  <span>Mức phạt (VNĐ)</span>
-                  <span className="text-center">Tỷ lệ (%)</span>
-                </div>
-                {districtViolations.map((item, index) => (
-                  <div
-                    key={index}
-                    className="grid grid-cols-4 gap-4 text-sm py-2 border-b border-gray-100"
-                  >
-                    <span className="font-medium">{item.district}</span>
-                    <span className="text-red-600 font-medium">
-                      {item.violations.toLocaleString()}
-                    </span>
-                    <span className="text-gray-600">{item.fine}</span>
-                    <span className="text-blue-600 font-medium text-center">
-                      {item.rate}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Bản đồ mật độ giao thông</CardTitle>
-              <CardDescription>
-                Các điểm vi phạm hiển thị bằng chấm đỏ, quy mô theo số lỗi
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative">
-                <img
-                  src="/placeholder.svg"
-                  alt="Bản đồ Hà Nội"
-                  width={500}
-                  height={300}
-                  className="w-full h-64 object-cover rounded"
-                />
-                {/* Large violation spots */}
-                <div className="absolute top-1/4 left-1/3 w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg opacity-80"></div>
-                <div className="absolute top-1/2 left-1/4 w-6 h-6 bg-red-600 rounded-full border-2 border-white shadow-lg opacity-90"></div>
-                <div className="absolute top-2/3 right-1/3 w-3 h-3 bg-red-400 rounded-full border-2 border-white shadow-lg opacity-70"></div>
-                <div className="absolute top-1/3 right-1/4 w-5 h-5 bg-red-500 rounded-full border-2 border-white shadow-lg opacity-85"></div>
-                <div className="absolute top-3/4 left-1/2 w-3 h-3 bg-red-400 rounded-full border-2 border-white shadow-lg opacity-75"></div>
-              </div>
-              <div className="flex items-center justify-center gap-2 mt-4 text-sm md:flex-col md:items-start">
-                <div className="flex items-center space-x-1">
-                  <div className="w-6 h-6 bg-red-600 rounded-full border-2 border-white"></div>
-                  <span>Cao ({">"} 100 vi phạm)</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-white"></div>
-                  <span>Trung bình (50-100)</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <div className="w-3 h-3 bg-red-400 rounded-full border-2 border-white"></div>
-                  <span>Thấp ({"<"} 50)</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <ViolationsByDistrict />
+          <MapCamera />
         </div>
       </div>
     </DashboardLayout>

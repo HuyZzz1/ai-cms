@@ -32,7 +32,7 @@ export function FilterDropdown({
 
   const currentDistrictList = useMemo(() => {
     const regionIds =
-      user?.tenantId?.regions?.map((region) => region._id || region.id) ?? [];
+      user?.tenantId?.regions?.map((region) => region?.regionId?._id) ?? [];
 
     return districtList?.filter((district) =>
       regionIds?.includes(district.regionId)

@@ -9,8 +9,10 @@ import { getListCameraQuery } from "@/service/api/camera";
 import { userRecoil } from "@/service/recoil/user";
 import { useRecoilValue } from "recoil";
 import L from "leaflet";
+import { Badge } from "@/components/ui/badge";
+import { districtsRecoil } from "@/service/recoil/regions";
 
-const MapResizer = () => {
+export const MapResizer = () => {
   const map = useMap();
 
   useEffect(() => {
@@ -29,7 +31,7 @@ const MapResizer = () => {
   return null;
 };
 
-const ZoomTracker = ({ onZoomChange }) => {
+export const ZoomTracker = ({ onZoomChange }) => {
   const map = useMap();
 
   useEffect(() => {
@@ -47,11 +49,12 @@ const ZoomTracker = ({ onZoomChange }) => {
 };
 
 function CameraMap() {
-  const [zoom, setZoom] = useState(14);
+  const [zoom, setZoom] = useState(15);
   const user = useRecoilValue(userRecoil);
   const [openedMarkerId, setOpenedMarkerId] = useState(null);
   const hoverTimeout = useRef(null);
   const markerRefs = useRef({});
+  const districtList = useRecoilValue(districtsRecoil);
 
   const { data } = useQuery({
     queryKey: [QueryKey.cameras],
@@ -59,8 +62,21 @@ function CameraMap() {
   });
 
   const regionIds = useMemo(() => {
-    return user?.tenantId?.regions?.map((r) => r._id || r.id) ?? [];
+    return (
+      user?.tenantId?.regions?.map((region) => region?.regionId?._id) ?? []
+    );
   }, [user]);
+
+  const currentDistrictList = useMemo(() => {
+    const regionIds =
+      user?.tenantId?.regions?.map((region) => region?.regionId?._id) ?? [];
+
+    return (
+      districtList?.filter((district) =>
+        regionIds?.includes(district.regionId)
+      ) || []
+    );
+  }, [districtList, user?.tenantId?.regions]);
 
   const filteredCameras = useMemo(() => {
     return (data?.docs || []).filter((cam) =>
@@ -69,12 +85,16 @@ function CameraMap() {
   }, [data?.docs, regionIds]);
 
   const defaultCenter = useMemo(() => {
-    const firstRegion = user?.tenantId?.regions?.[0];
+    const districtListSafe = currentDistrictList || [];
+    const firstRegion =
+      districtListSafe.length > 0
+        ? districtListSafe[0]
+        : user?.tenantId?.regions?.[0];
+
     return firstRegion
       ? [Number(firstRegion.lat), Number(firstRegion.lng)]
-      : [16.0471, 108.2062];
-  }, [user]);
-
+      : [10.82302, 106.62965];
+  }, [currentDistrictList]);
   const cameraList = filteredCameras;
 
   const cameraDetailData = useMemo(
@@ -104,6 +124,21 @@ function CameraMap() {
     }
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "active":
+        return "bg-green-100 text-green-800 border-green-200";
+      // case "Đang kiểm tra":
+      //   return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "inactive":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "error":
+        return "bg-orange-100 text-orange-800 border-orange-200";
+      default:
+        return null;
+    }
+  };
+
   const getName = (status) => {
     switch (status) {
       case "active":
@@ -120,10 +155,18 @@ function CameraMap() {
   useEffect(() => {
     Object.entries(markerRefs.current).forEach(([id, ref]) => {
       if (!ref) return;
-      if (id === openedMarkerId) ref.openPopup();
-      else ref.closePopup();
+
+      if (zoom > 15) {
+        ref.openPopup();
+      } else {
+        if (id === openedMarkerId) {
+          ref.openPopup();
+        } else {
+          ref.closePopup();
+        }
+      }
     });
-  }, [openedMarkerId]);
+  }, [zoom, openedMarkerId]);
 
   return (
     <DashboardLayout>
@@ -210,12 +253,18 @@ function CameraMap() {
                   },
                 }}
               >
-                <div className="text-sm">
-                  <strong>Thiết bị:</strong> {cam.device}
-                  <br />
-                  ⚙️ {getName(cam.status)}
-                  <br />
-                  📍 {cam.locationName}
+                <div className="flex flex-col gap-2">
+                  <Badge
+                    variant="outline"
+                    className={`text-xs ${getStatusColor(cam?.status)}`}
+                  >
+                    Trạng thái: {getName(cam?.status)}
+                  </Badge>
+                  <span className="font-medium">
+                    <span className="font-semibold">Thiết bị:</span>{" "}
+                    {cam?.device}
+                  </span>
+                  <span className="font-medium">📍 {cam?.locationName}</span>
                 </div>
               </Popup>
             </Marker>

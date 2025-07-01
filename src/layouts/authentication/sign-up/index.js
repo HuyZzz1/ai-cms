@@ -18,6 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { regionsRecoil } from "@/service/recoil/regions";
+import { useRecoilValue } from "recoil";
 
 function Basic() {
   const {
@@ -29,9 +31,11 @@ function Basic() {
       email: "",
       password: "",
       name: "",
+      regionId: "",
     },
   });
   const navigate = useNavigate();
+  const regionList = useRecoilValue(regionsRecoil);
 
   const { mutate, isPending } = useMutation({
     mutationFn: registerTenantsQuery,
@@ -68,6 +72,39 @@ function Basic() {
 
         <MDBox pt={4} pb={3} px={3}>
           <form onSubmit={handleSubmit(onSubmit)}>
+            <MDBox mb={2}>
+              <Controller
+                name="regionId"
+                control={control}
+                rules={{
+                  required: "Vui lòng chọn khu vực",
+                }}
+                render={({ field }) => (
+                  <>
+                    <label className="block mb-1 text-sm text-[#737373]">
+                      Khu vực
+                    </label>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="h-[44px]">
+                        <SelectValue placeholder="Chọn khu vực" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {regionList?.map((region) => (
+                          <SelectItem key={region._id} value={region._id}>
+                            {region.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </>
+                )}
+              />
+              {errors.regionId && (
+                <span className="text-sm text-red-600 mt-1 block">
+                  {errors.regionId.message}
+                </span>
+              )}
+            </MDBox>
             <MDBox mb={2}>
               <Controller
                 name="name"
