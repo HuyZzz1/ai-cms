@@ -94,7 +94,7 @@ function CameraMap() {
     return firstRegion && firstRegion.lat && firstRegion.lng
       ? [Number(firstRegion.lat), Number(firstRegion.lng)]
       : [10.82302, 106.62965];
-  }, [currentDistrictList]);
+  }, [currentDistrictList, districtList]);
   const cameraList = filteredCameras;
 
   const cameraDetailData = useMemo(
