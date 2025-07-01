@@ -46,11 +46,15 @@ import LoaderComponent from "components/LoaderComponent";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import SignIn from "layouts/authentication/sign-in";
 import { DEFAULT_FILTER, QueryKey, RoleName } from "./service/constant";
-import { regionsRecoil } from "./service/recoil/regions";
-import { getListRegionsQuery } from "./service/api/camera";
+import { districtsRecoil, regionsRecoil } from "./service/recoil/regions";
+import {
+  getListDistrictsQuery,
+  getListRegionsQuery,
+} from "./service/api/camera";
 import { Toaster } from "sonner";
 import { ConfirmDialogProvider } from "./components/ConfirmDialogProvider";
 import SignUp from "layouts/authentication/sign-up";
+import CameraDetail from "./layouts/camera/detail";
 
 const injectUserNameToRoutes = (routes, userRole) =>
   routes.map((route) => {
@@ -85,6 +89,7 @@ export default function App() {
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userRecoil);
   const setRegions = useSetRecoilState(regionsRecoil);
+  const setDistricts = useSetRecoilState(districtsRecoil);
 
   // Cache for the rtl
   useMemo(() => {
@@ -144,6 +149,8 @@ export default function App() {
   const { mutate: fetchMe, isPending } = useMutation({
     mutationFn: meQuery,
     onSuccess: ({ data }) => {
+      console.log("data", data);
+
       setUser({ ...data, isLoading: false });
 
       if (pathname === "/authentication/sign-in") {
@@ -158,8 +165,14 @@ export default function App() {
 
   const { data: dataRegions } = useQuery({
     enabled: !!user._id,
-    queryKey: [QueryKey.configField],
+    queryKey: [QueryKey.regions],
     queryFn: () => getListRegionsQuery({ ...DEFAULT_FILTER, limit: 9999 }),
+  });
+
+  const { data: dataDistricts } = useQuery({
+    enabled: !!user._id,
+    queryKey: [QueryKey.districts],
+    queryFn: () => getListDistrictsQuery({ ...DEFAULT_FILTER, limit: 9999 }),
   });
 
   // Setting the dir attribute for the body element
@@ -178,6 +191,12 @@ export default function App() {
       setRegions(dataRegions?.data?.docs);
     }
   }, [dataRegions]);
+
+  useEffect(() => {
+    if (dataDistricts?.data?.docs?.length > 0) {
+      setDistricts(dataDistricts?.data?.docs);
+    }
+  }, [dataDistricts]);
 
   // 1. Gọi fetchMe một lần khi load app nếu chưa có user
   useEffect(() => {
@@ -223,6 +242,7 @@ export default function App() {
         )}
         <Routes>
           {getRoutes(routesWithUserName)}
+          <Route path="/management/camera/:id" element={<CameraDetail />} />
           <Route path="/authentication/sign-in" element={<SignIn />} />
           <Route path="/authentication/sign-up" element={<SignUp />} />
           <Route path="*" element={<Navigate to="/authentication/sign-in" />} />

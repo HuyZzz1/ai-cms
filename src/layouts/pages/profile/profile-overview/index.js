@@ -56,8 +56,6 @@ import { userRecoil } from "service/recoil/user";
 function Overview() {
   const user = useRecoilValue(userRecoil);
 
-  console.log("user", user);
-
   return (
     <DashboardLayout>
       <DashboardNavbar />

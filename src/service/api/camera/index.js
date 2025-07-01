@@ -20,3 +20,11 @@ export const updateCameraQuery = async (params) => {
 export const deleteCameraQuery = async (params) => {
   return await http.delete(`/v1/cameras/${params.id}`, params);
 };
+
+export const getListDistrictsQuery = async (params) => {
+  return await http.post("/v1/districts/list", params);
+};
+
+export const getCameraDetailQuery = async (id) => {
+  return await http.get(`/v1/cameras/${id}`);
+};

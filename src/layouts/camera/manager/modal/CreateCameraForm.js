@@ -1,9 +1,8 @@
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
 import Modal from "react-modal";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRecoilValue } from "recoil";
-import { regionsRecoil } from "@/service/recoil/regions";
 import CameraInputField from "./CameraInputField";
 import CameraSelectField from "./CameraSelectField";
 import { createCameraQuery } from "@/service/api/camera";
@@ -11,11 +10,23 @@ import { Button } from "@/components/ui/button";
 import { message } from "@/components/ui/message";
 import { ErrorMessage } from "@/service/message";
 import { QueryKey } from "@/service/constant";
+import { districtsRecoil } from "@/service/recoil/regions";
+import { userRecoil } from "@/service/recoil/user";
 
 const CreateCameraForm = forwardRef(({}, ref) => {
-  const regionList = useRecoilValue(regionsRecoil);
+  const districtList = useRecoilValue(districtsRecoil);
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
+  const user = useRecoilValue(userRecoil);
+
+  const currentDistrictList = useMemo(() => {
+    const regionIds =
+      user?.tenantId?.regions?.map((region) => region._id || region.id) ?? [];
+
+    return districtList?.filter((district) =>
+      regionIds?.includes(district.regionId)
+    );
+  }, [districtList, user?.tenantId?.regions]);
 
   const {
     control,
@@ -27,7 +38,7 @@ const CreateCameraForm = forwardRef(({}, ref) => {
       device: "",
       location: "",
       url: "",
-      regionId: "",
+      districtId: "",
       lat: "",
       lng: "",
       status: "active",
@@ -84,13 +95,13 @@ const CreateCameraForm = forwardRef(({}, ref) => {
           control={control}
           errors={errors}
         />
-        {regionList && (
+        {currentDistrictList && (
           <CameraSelectField
-            name="regionId"
+            name="districtId"
             label="Khu vực"
             control={control}
             errors={errors}
-            options={regionList.map((opt) => ({
+            options={currentDistrictList.map((opt) => ({
               value: opt._id,
               label: opt.name,
             }))}

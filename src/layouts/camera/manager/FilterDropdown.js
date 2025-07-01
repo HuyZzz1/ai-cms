@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/select";
 import { Filter, ChevronDown, Search } from "lucide-react";
 import { useRecoilValue } from "recoil";
-import { regionsRecoil } from "@/service/recoil/regions";
+import { districtsRecoil } from "@/service/recoil/regions";
+import { userRecoil } from "@/service/recoil/user";
 
 export function FilterDropdown({
   onApplyFilters,
@@ -19,15 +20,24 @@ export function FilterDropdown({
 }) {
   const defaultFilters = {
     searchQuery: "",
-    regionId: "all",
+    districtId: "all",
     status: "all",
   };
 
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [filters, setFilters] = useState(initialFilters || defaultFilters);
   const dropdownRef = useRef(null);
+  const districtList = useRecoilValue(districtsRecoil);
+  const user = useRecoilValue(userRecoil);
 
-  const regionList = useRecoilValue(regionsRecoil);
+  const currentDistrictList = useMemo(() => {
+    const regionIds =
+      user?.tenantId?.regions?.map((region) => region._id || region.id) ?? [];
+
+    return districtList?.filter((district) =>
+      regionIds?.includes(district.regionId)
+    );
+  }, [districtList, user?.tenantId?.regions]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -124,9 +134,9 @@ export function FilterDropdown({
                   Khu vực
                 </label>
                 <Select
-                  value={filters.regionId}
+                  value={filters.districtId}
                   onValueChange={(value) =>
-                    handleFilterChange("regionId", value)
+                    handleFilterChange("districtId", value)
                   }
                 >
                   <SelectTrigger
@@ -138,9 +148,9 @@ export function FilterDropdown({
 
                   <SelectContent>
                     <SelectItem value="all">Tất cả khu vực</SelectItem>
-                    {regionList?.map((region) => (
-                      <SelectItem key={region._id} value={region._id}>
-                        {region.name}
+                    {currentDistrictList?.map((district) => (
+                      <SelectItem key={district._id} value={district._id}>
+                        {district.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

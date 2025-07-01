@@ -17,7 +17,7 @@ export default function CameraManagement() {
   const [page, setPage] = useState(1);
   const [activeFilters, setActiveFilters] = useState({
     searchQuery: "",
-    regionId: "all",
+    districtId: "all",
     status: "all",
   });
 
@@ -29,8 +29,8 @@ export default function CameraManagement() {
     queryKey: [QueryKey.cameras, activeFilters, page],
     queryFn: () => {
       const filter = {};
-      if (activeFilters.regionId !== "all") {
-        filter.regionId = activeFilters.regionId;
+      if (activeFilters.districtId !== "all") {
+        filter.districtId = activeFilters.districtId;
       }
       if (activeFilters.status !== "all") {
         filter.status = activeFilters.status;

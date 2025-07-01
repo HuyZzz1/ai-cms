@@ -1,43 +1,32 @@
-import { useState, useMemo, useEffect } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  CircleMarker,
-  Tooltip,
-  useMap,
-} from "react-leaflet";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useQuery } from "@tanstack/react-query";
 import DashboardLayout from "@/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "@/examples/Navbars/DashboardNavbar";
 import { QueryKey } from "@/service/constant";
 import { getListCameraQuery } from "@/service/api/camera";
-import { MapPin } from "lucide-react";
+import { userRecoil } from "@/service/recoil/user";
+import { useRecoilValue } from "recoil";
+import L from "leaflet";
 
-const getName = (status) => {
-  switch (status) {
-    case "active":
-      return "Đang hoạt động";
-    case "inactive":
-      return "Không hoạt động";
-    case "error":
-      return "Lỗi";
-    default:
-      return "Không rõ";
-  }
-};
+const MapResizer = () => {
+  const map = useMap();
 
-const getColorByStatus = (status) => {
-  switch (status) {
-    case "active":
-      return "#4CAF50";
-    case "inactive":
-      return "#90A4AE";
-    case "error":
-      return "#F44336";
-    default:
-      return "#BDBDBD";
-  }
+  useEffect(() => {
+    if (!map) return;
+    map.whenReady(() => {
+      requestAnimationFrame(() => {
+        try {
+          map.invalidateSize();
+        } catch (error) {
+          console.error("invalidateSize failed:", error);
+        }
+      });
+    });
+  }, [map]);
+
+  return null;
 };
 
 const ZoomTracker = ({ onZoomChange }) => {
@@ -58,51 +47,83 @@ const ZoomTracker = ({ onZoomChange }) => {
 };
 
 function CameraMap() {
-  const [zoom, setZoom] = useState(6);
+  const [zoom, setZoom] = useState(14);
+  const user = useRecoilValue(userRecoil);
+  const [openedMarkerId, setOpenedMarkerId] = useState(null);
+  const hoverTimeout = useRef(null);
+  const markerRefs = useRef({});
 
   const { data } = useQuery({
     queryKey: [QueryKey.cameras],
     queryFn: () => getListCameraQuery({ page: 1, limit: 9999 }),
   });
 
-  const cameraList = data?.docs || [];
+  const regionIds = useMemo(() => {
+    return user?.tenantId?.regions?.map((r) => r._id || r.id) ?? [];
+  }, [user]);
 
-  const summaryByProvince = useMemo(() => {
-    const map = {};
+  const filteredCameras = useMemo(() => {
+    return (data?.docs || []).filter((cam) =>
+      regionIds.includes(cam.districtId.regionId._id)
+    );
+  }, [data?.docs, regionIds]);
 
-    cameraList.forEach((cam) => {
-      const regionName = cam.regionId?.name || "Không rõ";
+  const defaultCenter = useMemo(() => {
+    const firstRegion = user?.tenantId?.regions?.[0];
+    return firstRegion
+      ? [Number(firstRegion.lat), Number(firstRegion.lng)]
+      : [16.0471, 108.2062];
+  }, [user]);
 
-      if (!map[regionName]) {
-        map[regionName] = {
-          province: regionName,
-          lat: cam.regionId?.lat || cam.lat,
-          lng: cam.regionId?.lng || cam.lng,
-          active: 0,
-          inactive: 0,
-          error: 0,
-        };
-      }
-
-      if (cam.status === "active") map[regionName].active++;
-      else if (cam.status === "inactive") map[regionName].inactive++;
-      else if (cam.status === "error") map[regionName].error++;
-    });
-
-    return Object.values(map);
-  }, [cameraList]);
+  const cameraList = filteredCameras;
 
   const cameraDetailData = useMemo(
     () =>
-      cameraList.map((cam) => ({
+      cameraList?.map((cam) => ({
+        id: cam._id,
         lat: cam.lat,
         lng: cam.lng,
-        province: cam.regionId?.name || "Không rõ",
+        province: cam.districtId?.name || "Không rõ",
         locationName: cam.location,
         status: cam.status,
+        device: cam.device,
       })),
     [cameraList]
   );
+
+  const getColorByStatus = (status) => {
+    switch (status) {
+      case "active":
+        return "#4CAF50";
+      case "inactive":
+        return "#F44336";
+      case "error":
+        return "#BDBDBD";
+      default:
+        return "#BDBDBD";
+    }
+  };
+
+  const getName = (status) => {
+    switch (status) {
+      case "active":
+        return "Đang hoạt động";
+      case "inactive":
+        return "Không hoạt động";
+      case "error":
+        return "Lỗi";
+      default:
+        return "Không rõ";
+    }
+  };
+
+  useEffect(() => {
+    Object.entries(markerRefs.current).forEach(([id, ref]) => {
+      if (!ref) return;
+      if (id === openedMarkerId) ref.openPopup();
+      else ref.closePopup();
+    });
+  }, [openedMarkerId]);
 
   return (
     <DashboardLayout>
@@ -110,10 +131,11 @@ function CameraMap() {
       <h2 className="text-xl font-semibold mb-5">Bản đồ khu vực Camera</h2>
 
       <MapContainer
-        center={[16.0471, 108.2062]}
+        center={defaultCenter}
         zoom={zoom}
         className="w-full h-[800px] rounded-lg md:h-[500px]"
       >
+        <MapResizer />
         <ZoomTracker onZoomChange={setZoom} />
 
         <TileLayer
@@ -121,81 +143,87 @@ function CameraMap() {
           attribution="© OpenStreetMap contributors, © CARTO"
         />
 
-        {zoom <= 10
-          ? summaryByProvince.map((item, idx) => (
-              <CircleMarker
-                key={`province-${idx}`}
-                center={[item.lat, item.lng]}
-                radius={10}
-                fillColor="#2E2EFF"
-                color="#2E2EFF"
-                fillOpacity={0.85}
-              >
-                <Tooltip
-                  direction="top"
-                  offset={[0, -20]}
-                  opacity={1}
-                  permanent
-                  sticky
-                >
-                  <span>
-                    {item.province}
-                    <br />
-                    🟢 Hoạt động: {item.active}
-                    <br />⚪ Không hoạt động: {item.inactive}
-                    <br />
-                    🔴 Lỗi: {item.error}
-                    <br />
-                    📊 Tổng: {item.active + item.inactive + item.error}
-                  </span>
-                </Tooltip>
-              </CircleMarker>
-            ))
-          : cameraDetailData.map((cam, idx) => {
-              const color = getColorByStatus(cam.status);
+        {cameraDetailData.map((cam, idx) => {
+          const color = getColorByStatus(cam.status);
 
-              return (
-                <CircleMarker
-                  key={idx}
-                  center={[cam.lat, cam.lng]}
-                  radius={10}
-                  pathOptions={{
-                    color,
-                    fillColor: color,
-                    fillOpacity: 0.85,
-                  }}
-                >
-                  {zoom > 12 ? (
-                    <Tooltip
-                      key={`permanent-${idx}`}
-                      direction="top"
-                      offset={[0, -10]}
-                      opacity={1}
-                      sticky
-                      permanent
-                    >
-                      ⚙️ {getName(cam.status)}
-                      <br />
-                      📍 {cam.locationName}
-                    </Tooltip>
-                  ) : (
-                    <Tooltip
-                      key={`hover-${idx}`}
-                      direction="top"
-                      offset={[0, -10]}
-                      opacity={1}
-                      sticky
-                    >
-                      ⚙️ {getName(cam.status)}
-                      <br />
-                      📍 {cam.locationName}
-                    </Tooltip>
-                  )}
-                </CircleMarker>
-              );
-            })}
+          const markerIcon = new L.DivIcon({
+            className: "custom-marker",
+            html: `<div style="width: 24px; height: 24px; background: ${color}; border-radius: 50%; border: 2px solid white;"></div>`,
+            iconSize: [10, 10],
+            iconAnchor: [6, 6],
+          });
+
+          return (
+            <Marker
+              key={`marker-${idx}`}
+              position={[cam.lat, cam.lng]}
+              icon={markerIcon}
+              eventHandlers={{
+                mouseover: () => {
+                  if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+                  setOpenedMarkerId(cam.id);
+                },
+                mouseout: () => {
+                  hoverTimeout.current = setTimeout(() => {
+                    if (openedMarkerId === cam.id) {
+                      setOpenedMarkerId(null);
+                    }
+                  }, 300);
+                },
+              }}
+              ref={(ref) => {
+                if (ref) {
+                  markerRefs.current[cam.id] = ref;
+                }
+              }}
+            >
+              <Popup
+                autoClose={false}
+                closeButton={false}
+                eventHandlers={{
+                  add: (e) => {
+                    const popupEl = e.target.getElement();
+                    const handleEnter = () => {
+                      if (hoverTimeout.current)
+                        clearTimeout(hoverTimeout.current);
+                    };
+                    const handleLeave = () => {
+                      setOpenedMarkerId(null);
+                    };
+                    popupEl?.addEventListener("mouseenter", handleEnter);
+                    popupEl?.addEventListener("mouseleave", handleLeave);
+                    popupEl.__handlers = { handleEnter, handleLeave };
+                  },
+                  remove: (e) => {
+                    const popupEl = e.target.getElement();
+                    const handlers = popupEl.__handlers;
+                    if (handlers && popupEl) {
+                      popupEl.removeEventListener(
+                        "mouseenter",
+                        handlers.handleEnter
+                      );
+                      popupEl.removeEventListener(
+                        "mouseleave",
+                        handlers.handleLeave
+                      );
+                    }
+                  },
+                }}
+              >
+                <div className="text-sm">
+                  <strong>Thiết bị:</strong> {cam.device}
+                  <br />
+                  ⚙️ {getName(cam.status)}
+                  <br />
+                  📍 {cam.locationName}
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
       </MapContainer>
     </DashboardLayout>
   );
 }
+
 export default CameraMap;

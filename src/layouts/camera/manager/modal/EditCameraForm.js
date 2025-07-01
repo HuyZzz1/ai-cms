@@ -1,22 +1,33 @@
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
 import Modal from "react-modal";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRecoilValue } from "recoil";
-import { regionsRecoil } from "@/service/recoil/regions";
+import { districtsRecoil } from "@/service/recoil/regions";
 import CameraInputField from "./CameraInputField";
 import CameraSelectField from "./CameraSelectField";
-import { createCameraQuery, updateCameraQuery } from "@/service/api/camera";
+import { updateCameraQuery } from "@/service/api/camera";
 import { Button } from "@/components/ui/button";
 import { message } from "@/components/ui/message";
 import { ErrorMessage } from "@/service/message";
 import { QueryKey } from "@/service/constant";
+import { userRecoil } from "@/service/recoil/user";
 
 const EditCameraForm = forwardRef(({}, ref) => {
-  const regionList = useRecoilValue(regionsRecoil);
+  const districtList = useRecoilValue(districtsRecoil);
   const [isOpen, setIsOpen] = useState(false);
   const [item, setItem] = useState();
   const queryClient = useQueryClient();
+  const user = useRecoilValue(userRecoil);
+
+  const currentDistrictList = useMemo(() => {
+    const regionIds =
+      user?.tenantId?.regions?.map((region) => region._id || region.id) ?? [];
+
+    return districtList?.filter((district) =>
+      regionIds?.includes(district.regionId)
+    );
+  }, [districtList, user?.tenantId?.regions]);
 
   const {
     control,
@@ -28,7 +39,7 @@ const EditCameraForm = forwardRef(({}, ref) => {
       device: "",
       location: "",
       url: "",
-      regionId: "",
+      districtId: "",
       lat: "",
       lng: "",
       status: "",
@@ -61,7 +72,7 @@ const EditCameraForm = forwardRef(({}, ref) => {
           device: item.device || "",
           location: item.location || "",
           url: item.url || "",
-          regionId: item.regionId?._id || "",
+          districtId: item.districtId?._id || "",
           lat: item.lat?.toString() || "",
           lng: item.lng?.toString() || "",
           status: item.status || "",
@@ -119,17 +130,18 @@ const EditCameraForm = forwardRef(({}, ref) => {
           control={control}
           errors={errors}
         />
-        <CameraSelectField
-          name="regionId"
-          label="Khu vực"
-          control={control}
-          errors={errors}
-          options={regionList?.map((opt) => ({
-            value: opt._id,
-            label: opt.name,
-          }))}
-        />
-
+        {currentDistrictList && (
+          <CameraSelectField
+            name="districtId"
+            label="Khu vực"
+            control={control}
+            errors={errors}
+            options={currentDistrictList.map((opt) => ({
+              value: opt._id,
+              label: opt.name,
+            }))}
+          />
+        )}
         <CameraInputField
           name="location"
           label="Vị trí"

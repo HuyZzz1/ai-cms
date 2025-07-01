@@ -11,6 +11,13 @@ import { useMutation } from "@tanstack/react-query";
 import { ErrorMessage } from "service/message";
 import { message } from "@/components/ui/message";
 import { registerTenantsQuery } from "@/service/api/auth";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function Basic() {
   const {
@@ -83,6 +90,7 @@ function Basic() {
                         color: "error.main",
                       },
                     }}
+                    InputLabelProps={{ shrink: true }}
                   />
                 )}
               />
@@ -111,6 +119,7 @@ function Basic() {
                         color: "error.main",
                       },
                     }}
+                    InputLabelProps={{ shrink: true }}
                   />
                 )}
               />
@@ -136,6 +145,7 @@ function Basic() {
                         color: "error.main",
                       },
                     }}
+                    InputLabelProps={{ shrink: true }}
                   />
                 )}
               />

@@ -15,6 +15,8 @@ export const QueryKey = {
   cameras: "cameras",
   violations: "violations",
   ruleViolations: "ruleViolations",
+  districts: "districts",
+  cameraDetail: "cameraDetail",
 };
 
 export const DEFAULT_FILTER = {
