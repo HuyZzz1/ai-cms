@@ -62,10 +62,10 @@ const MapCamera = () => {
         ? districtListSafe[0]
         : user?.tenantId?.regions?.[0];
 
-    return firstRegion
+    return firstRegion && firstRegion.lat && firstRegion.lng
       ? [Number(firstRegion.lat), Number(firstRegion.lng)]
-      : [10.82302, 106.62965]; // fallback: HCM
-  }, [currentDistrictList]);
+      : [10.82302, 106.62965];
+  }, [currentDistrictList, user]);
 
   const cameraList = filteredCameras;
 

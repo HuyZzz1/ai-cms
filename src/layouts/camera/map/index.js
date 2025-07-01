@@ -91,7 +91,7 @@ function CameraMap() {
         ? districtListSafe[0]
         : user?.tenantId?.regions?.[0];
 
-    return firstRegion
+    return firstRegion && firstRegion.lat && firstRegion.lng
       ? [Number(firstRegion.lat), Number(firstRegion.lng)]
       : [10.82302, 106.62965];
   }, [currentDistrictList]);
