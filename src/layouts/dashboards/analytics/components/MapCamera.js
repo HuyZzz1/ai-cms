@@ -60,7 +60,7 @@ const MapCamera = () => {
     const firstRegion =
       districtListSafe.length > 0
         ? districtListSafe[0]
-        : user?.tenantId?.regions?.[0];
+        : user?.tenantId?.regions?.[0]?.regionId;
 
     return firstRegion && firstRegion.lat && firstRegion.lng
       ? [Number(firstRegion.lat), Number(firstRegion.lng)]
