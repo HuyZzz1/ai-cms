@@ -24,6 +24,9 @@ import { FilterDropdown } from "./components/FilterDropdown";
 import TrafficHotpots from "./components/TrafficHotpots";
 import ViolationsByDistrict from "./components/ViolationsByDistrict";
 import MapCamera from "./components/MapCamera";
+import { useQuery } from "@tanstack/react-query";
+import { QueryKey } from "@/service/constant";
+import { getDashboardOverviewChartQuery } from "@/service/api/dashboard";
 
 const vehicleTrafficData = [
   { day: "Thứ 2", vehicles: 28500 },
@@ -35,31 +38,26 @@ const vehicleTrafficData = [
   { day: "Chủ nhật", vehicles: 18500 },
 ];
 
-const violationsData = [
-  { month: "T4", violations: 420 },
-  { month: "T5", violations: 380 },
-  { month: "T6", violations: 450 },
-  { month: "T7", violations: 490 },
-  { month: "T8", violations: 520 },
-  { month: "T9", violations: 480 },
-  { month: "T10", violations: 510 },
-  { month: "T11", violations: 530 },
-  { month: "T12", violations: 530 },
-];
-
-const cameraPerformanceData = [
-  { month: "T4", cameras: 145 },
-  { month: "T5", cameras: 148 },
-  { month: "T6", cameras: 152 },
-  { month: "T7", cameras: 155 },
-  { month: "T8", cameras: 158 },
-  { month: "T9", cameras: 160 },
-  { month: "T10", cameras: 162 },
-  { month: "T11", cameras: 165 },
-  { month: "T12", cameras: 167 },
-];
-
 export default function Analytics() {
+  const { data } = useQuery({
+    queryKey: [QueryKey.dashboardOverview],
+    queryFn: () => getDashboardOverviewChartQuery(),
+  });
+
+  const statistic = data?.data || [];
+
+  const formattedViolationsData =
+    statistic?.monthlyViolations?.map((item) => ({
+      month: `T${Number(item.month.split("-")[1])}`,
+      violations: item.count,
+    })) || [];
+
+  const formattedCameraPerformanceData =
+    statistic?.monthlyActiveCameras?.map((item) => ({
+      month: `T${Number(item.month.split("-")[1])}`,
+      cameras: item.count,
+    })) || [];
+
   const [activeFilters, setActiveFilters] = useState({
     searchQuery: "",
     districtFilter: "all",
@@ -128,17 +126,17 @@ export default function Analytics() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">
-                Số vi phạm ghi nhận hôm nay
+                Số vi phạm ghi nhận theo tháng
               </CardTitle>
               <CardDescription>
-                Tăng +15% so với hôm qua
+                Hiệu suất ghi nhận gần nhất
                 <br />
-                Cập nhật 4 phút trước
+                Vừa được cập nhật
               </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={violationsData}>
+                <LineChart data={formattedViolationsData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
                     dataKey="month"
@@ -172,7 +170,7 @@ export default function Analytics() {
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={cameraPerformanceData}>
+                <LineChart data={formattedCameraPerformanceData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
                     dataKey="month"
@@ -201,10 +199,8 @@ export default function Analytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-3xl font-bold">13,492</p>
-                  <p className="text-sm text-gray-300">
-                    +18% so với tuần trước
-                  </p>
+                  <p className="text-3xl font-bold">0</p>
+                  <p className="text-sm text-gray-300">+0% so với tuần trước</p>
                   <p className="text-xs text-gray-400 mt-1">
                     Sự kiện đã ghi nhận
                   </p>
@@ -220,8 +216,8 @@ export default function Analytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-3xl font-bold">24,500</p>
-                  <p className="text-sm text-gray-300">+3% so với hôm qua</p>
+                  <p className="text-3xl font-bold">0</p>
+                  <p className="text-sm text-gray-300">+0% so với hôm qua</p>
                   <p className="text-xs text-gray-400 mt-1">
                     Phương tiện hôm nay
                   </p>
@@ -237,9 +233,14 @@ export default function Analytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-3xl font-bold">530</p>
+                  <p className="text-3xl font-bold">
+                    {statistic?.violationCard?.today || 0}
+                  </p>
                   <p className="text-sm text-gray-300">
-                    +11% tăng so với hôm qua
+                    {statistic?.violationCard?.rate >= 0
+                      ? `+${statistic?.violationCard?.rate}`
+                      : `${statistic?.violationCard?.rate}`}
+                    % tăng so với hôm qua
                   </p>
                   <p className="text-xs text-gray-400 mt-1">Vi phạm hôm nay</p>
                 </div>
@@ -254,10 +255,11 @@ export default function Analytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-3xl font-bold">3</p>
-                  <p className="text-sm text-gray-300">
-                    Cập nhật cách đây 2 phút
+                  <p className="text-3xl font-bold">
+                    {" "}
+                    {statistic?.cameraCard?.error || 0}
                   </p>
+                  <p className="text-sm text-gray-300">Vừa được cập nhật</p>
                   <p className="text-xs text-gray-400 mt-1">Camera gặp sự cố</p>
                 </div>
                 <div className="bg-white bg-opacity-20 p-2 rounded">

@@ -40,21 +40,17 @@ import {
 import { Toast } from "components/Toast";
 import { meQuery } from "service/api/auth";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { userRecoil } from "service/recoil/user";
 import LoaderComponent from "components/LoaderComponent";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import SignIn from "layouts/authentication/sign-in";
-import { DEFAULT_FILTER, QueryKey, RoleName } from "./service/constant";
-import { districtsRecoil, regionsRecoil } from "./service/recoil/regions";
-import {
-  getListDistrictsQuery,
-  getListRegionsQuery,
-} from "./service/api/camera";
+import { RoleName } from "./service/constant";
 import { Toaster } from "sonner";
 import { ConfirmDialogProvider } from "./components/ConfirmDialogProvider";
 import SignUp from "layouts/authentication/sign-up";
 import CameraDetail from "./layouts/camera/detail";
+import { useInitRegionsAndDistricts } from "./lib/hook";
 
 const injectUserNameToRoutes = (routes, userRole) =>
   routes.map((route) => {
@@ -88,8 +84,8 @@ export default function App() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userRecoil);
-  const setRegions = useSetRecoilState(regionsRecoil);
-  const setDistricts = useSetRecoilState(districtsRecoil);
+
+  useInitRegionsAndDistricts();
 
   // Cache for the rtl
   useMemo(() => {
@@ -163,18 +159,6 @@ export default function App() {
     },
   });
 
-  const { data: dataRegions } = useQuery({
-    enabled: !!user._id,
-    queryKey: [QueryKey.regions],
-    queryFn: () => getListRegionsQuery({ ...DEFAULT_FILTER, limit: 9999 }),
-  });
-
-  const { data: dataDistricts } = useQuery({
-    enabled: !!user._id,
-    queryKey: [QueryKey.districts],
-    queryFn: () => getListDistrictsQuery({ ...DEFAULT_FILTER, limit: 9999 }),
-  });
-
   // Setting the dir attribute for the body element
   useEffect(() => {
     document.body.setAttribute("dir", direction);
@@ -186,35 +170,29 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  useEffect(() => {
-    if (dataRegions?.data?.docs?.length > 0) {
-      setRegions(dataRegions?.data?.docs);
-    }
-  }, [dataRegions]);
-
-  useEffect(() => {
-    if (dataDistricts?.data?.docs?.length > 0) {
-      setDistricts(dataDistricts?.data?.docs);
-    }
-  }, [dataDistricts]);
-
   // 1. Gọi fetchMe một lần khi load app nếu chưa có user
   useEffect(() => {
     const isAuthPage =
       pathname === "/authentication/sign-in" ||
       pathname === "/authentication/sign-up";
 
-    if (!isAuthPage && !user?._id) {
+    if (!isAuthPage && !user?.id) {
       fetchMe();
     }
   }, []);
 
   // 2. Nếu đã có user và vẫn đang ở trang sign-in, thì điều hướng
   useEffect(() => {
-    if (user?._id && pathname === "/authentication/sign-in") {
+    if (user?.id && pathname === "/authentication/sign-in") {
       navigate("/dashboards/overview");
     }
-  }, [pathname, user?._id]);
+  }, [pathname, user?.id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchMe();
+    }
+  }, [user?.id]);
 
   if (isPending) {
     return (

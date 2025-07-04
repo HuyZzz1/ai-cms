@@ -18,6 +18,11 @@ export const QueryKey = {
   districts: "districts",
   cameraDetail: "cameraDetail",
   violationsByDistrict: "violationsByDistrict",
+  trafficHotspots: "trafficHotspots",
+  dashboardOverviewAnalytics: "dashboardOverviewAnalytics",
+  dashboardOverview: "dashboardOverview",
+  dashboardViolationRatePerRule: "dashboardViolationRatePerRule",
+  dashboardViolationByTimeFrame: "dashboardViolationByTimeFrame",
 };
 
 export const DEFAULT_FILTER = {

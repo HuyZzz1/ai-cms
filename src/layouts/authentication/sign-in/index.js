@@ -9,7 +9,7 @@ import MDButton from "components/MDButton";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginQuery } from "service/api/auth";
 import { setCookie } from "service/cookies";
 import { CookieKey } from "service/cookies";
@@ -18,6 +18,7 @@ import { ErrorMessage } from "service/message";
 import { useSetRecoilState } from "recoil";
 import { userRecoil } from "service/recoil/user";
 import { message } from "@/components/ui/message";
+import { QueryKey } from "@/service/constant";
 
 function Basic() {
   const {
@@ -32,13 +33,20 @@ function Basic() {
   });
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userRecoil);
+  const queryClient = useQueryClient();
 
   const { mutate: login, isPending } = useMutation({
     mutationFn: loginQuery,
     onSuccess: ({ data }) => {
       setCookie(CookieKey.ACCESS_TOKEN, data.access_token);
       setUser({ ...data.user, isLoading: false });
-      navigate("/dashboards/overview");
+
+      queryClient.invalidateQueries({ queryKey: [QueryKey.regions] });
+      queryClient.invalidateQueries({ queryKey: [QueryKey.districts] });
+
+      setTimeout(() => {
+        navigate("/dashboards/overview");
+      }, 0);
     },
     onError: (err) => {
       message.error(ErrorMessage[err.message] || err.message);
