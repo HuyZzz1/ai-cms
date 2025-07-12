@@ -65,8 +65,6 @@ export default function WarningAi() {
     }));
   }, [data]);
 
-  console.log("data", data);
-
   return (
     <DashboardLayout>
       <DashboardNavbar breadcrumbRoute={["Giám sát", "Cảnh báo AI"]} />

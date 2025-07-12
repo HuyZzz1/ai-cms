@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import Modal from "react-modal";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
+import { getPreviewCaptureQuery } from "@/service/api/violations";
 
 export default function TrafficViolationsTable({
   data = [],
@@ -215,10 +216,28 @@ export default function TrafficViolationsTable({
                           <Button
                             variant="link"
                             className="text-blue-600 hover:text-blue-800 p-0 h-auto font-medium"
-                            onClick={() => {
-                              setSelectedImages(violation.evidences || []);
-                              setPhotoIndex(0);
-                              setModalOpen(true);
+                            onClick={async () => {
+                              const paths = violation.evidences || [];
+
+                              try {
+                                const result = await Promise.all(
+                                  paths.map(async (path) => {
+                                    const res = await getPreviewCaptureQuery(
+                                      path
+                                    );
+                                    return res;
+                                  })
+                                );
+
+                                setSelectedImages(result.filter(Boolean));
+                                setPhotoIndex(0);
+                                setModalOpen(true);
+                              } catch (error) {
+                                console.error(
+                                  "Error loading preview images:",
+                                  error
+                                );
+                              }
                             }}
                           >
                             {violation.evidence}
@@ -324,7 +343,7 @@ export default function TrafficViolationsTable({
                 key={idx}
                 src={src}
                 alt={`evidence-${idx}`}
-                className="w-[250px] h-[150px] object-cover border rounded cursor-zoom-in"
+                className="w-[300px] h-[180px]  border rounded cursor-zoom-in"
                 onClick={() => {
                   setPhotoIndex(idx);
                   setLightboxOpen(true);
