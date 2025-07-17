@@ -101,7 +101,8 @@ export default function CameraCard({ camera }) {
       <Link to={`/management/camera/${camera.id}`}>
         <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 border">
           <div className="relative aspect-video bg-gray-100 pointer-events-none">
-            <HlsPlayer src="https://camera.otalk.ai/stream/mystream.m3u8" />
+            <HlsPlayer src="https://camera.otalk.ai/stream/mystream" />
+
             {/* Live indicator */}
             {camera.status === "active" && (
               <div className="absolute top-2 left-2">
