@@ -59,26 +59,10 @@ export default function CameraDetail() {
         <div className="flex justify-between gap-10">
           <div className="w-[60%] h-[500px] relative ">
             <div className="w-full h-full pointer-events-none rounded-xl">
-              <ReactPlayer
-                url={data?.url || ""}
-                width="100%"
-                height="100%"
-                playing
-                muted
-                controls={false}
-                light={false}
-                config={{
-                  youtube: {
-                    playerVars: {
-                      autoplay: 1,
-                      mute: 1,
-                      modestbranding: 1,
-                      rel: 0,
-                      showinfo: 0,
-                      controls: 0,
-                    },
-                  },
-                }}
+              <iframe
+                src={data?.url}
+                style={{ width: "100%", height: 800 }}
+                className="rounded-xl"
               />
               {data?.status === "active" && (
                 <div className="absolute top-2 left-2">

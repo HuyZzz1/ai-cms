@@ -1,7 +1,6 @@
 import { QueryKey } from "@/service/constant";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import ReactPlayer from "react-player";
 import { Link } from "react-router-dom";
 import { getTrafficHotspotsQuery } from "@/service/api/dashboard";
 
@@ -24,30 +23,14 @@ const TrafficHotpots = () => {
                 key={index}
                 className="cursor-pointer hover:shadow-lg transition-shadow"
               >
-                <Link to={`/management/camera/${item.cameraId}`}>
+                <Link to={`/management/camera/${item?.cameraId}`}>
                   <CardContent className="p-0">
                     <div className="relative rounded-t-xl overflow-hidden">
-                      <div className="w-full h-[220px] pointer-events-none">
-                        <ReactPlayer
-                          url={item.cameraUrl}
-                          width="100%"
-                          height="100%"
-                          playing
-                          muted
-                          controls={false}
-                          light={false}
-                          config={{
-                            youtube: {
-                              playerVars: {
-                                autoplay: 1,
-                                mute: 1,
-                                modestbranding: 1,
-                                rel: 0,
-                                showinfo: 0,
-                                controls: 0,
-                              },
-                            },
-                          }}
+                      <div className="w-full h-[250px] pointer-events-none">
+                        <iframe
+                          src={item?.cameraUrl}
+                          style={{ width: "100%", height: 300 }}
+                          className="rounded-xl object-contain"
                         />
                       </div>
                     </div>
@@ -58,13 +41,6 @@ const TrafficHotpots = () => {
                       <h3 className="font-semibold text-sm mb-2">
                         {`${item?.district}: ${item?.location}`}
                       </h3>
-                      {/* <p className="text-sm text-gray-600 mb-3">
-                        {index === 0
-                          ? "Mật độ cao, thường có vi phạm vượt đèn đỏ và lấn làn."
-                          : index === 1
-                          ? "Ùn tắc giờ cao điểm"
-                          : "Nút giao phức tạp"}
-                      </p> */}
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">
                           Vi phạm hôm nay: {item?.count || 0}
