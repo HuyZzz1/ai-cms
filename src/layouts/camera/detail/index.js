@@ -56,13 +56,13 @@ export default function CameraDetail() {
           </h2>
         </div>
 
-        <div className="flex justify-between gap-10">
-          <div className="w-[60%] h-[500px] relative ">
+        <div className="flex justify-between gap-10 md:flex-col md:gap-5">
+          <div className="w-[60%] relative md:w-full">
             <div className="w-full h-full pointer-events-none rounded-xl">
               <iframe
                 src={data?.url}
-                style={{ width: "100%", height: 800 }}
-                className="rounded-xl"
+                style={{ width: "100%" }}
+                className="rounded-xl h-[800px] xxl:h-[500px] md:!h-[300px]"
               />
               {data?.status === "active" && (
                 <div className="absolute top-2 left-2">
@@ -75,7 +75,7 @@ export default function CameraDetail() {
             </div>
           </div>
 
-          <div className=" flex-1">
+          <div className=" flex-1 md:w-full">
             <div className="flex items-center gap-2 mb-2">
               <Badge
                 variant="outline"
