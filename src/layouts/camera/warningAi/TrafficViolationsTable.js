@@ -15,6 +15,7 @@ import Modal from "react-modal";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import { getPreviewCaptureQuery } from "@/service/api/violations";
+import ReactPlayer from "react-player";
 
 export default function TrafficViolationsTable({
   data = [],
@@ -220,21 +221,22 @@ export default function TrafficViolationsTable({
                               const paths = violation.evidences || [];
 
                               try {
-                                const result = await Promise.all(
+                                const results = await Promise.all(
                                   paths.map(async (path) => {
-                                    const res = await getPreviewCaptureQuery(
-                                      path
-                                    );
-                                    return res;
+                                    const { url, fileType } =
+                                      await getPreviewCaptureQuery(path);
+                                    return { src: url, type: fileType };
                                   })
                                 );
 
-                                setSelectedImages(result.filter(Boolean));
+                                console.log("results", results);
+
+                                setSelectedImages(results);
                                 setPhotoIndex(0);
                                 setModalOpen(true);
                               } catch (error) {
                                 console.error(
-                                  "Error loading preview images:",
+                                  "Error loading preview files:",
                                   error
                                 );
                               }
@@ -338,36 +340,57 @@ export default function TrafficViolationsTable({
 
         {selectedImages.length > 0 ? (
           <div className="flex items-center gap-2.5 flex-wrap">
-            {selectedImages.map((src, idx) => (
-              <img
-                key={idx}
-                src={src}
-                alt={`evidence-${idx}`}
-                className="w-[300px] h-[180px]  border rounded cursor-zoom-in"
-                onClick={() => {
-                  setPhotoIndex(idx);
-                  setLightboxOpen(true);
-                }}
-              />
-            ))}
+            {selectedImages.map((file, idx) =>
+              file.type === "image" ? (
+                <img
+                  key={idx}
+                  src={file.src}
+                  alt={`evidence-${idx}`}
+                  className="w-[300px] h-[180px] border rounded cursor-zoom-in object-cover"
+                  onClick={() => {
+                    setPhotoIndex(idx);
+                    setLightboxOpen(true);
+                  }}
+                />
+              ) : (
+                <video
+                  controls
+                  src={file.src}
+                  className="w-[300px] h-[180px] border rounded"
+                  onLoadedMetadata={() =>
+                    console.log("Video loaded:", file.src)
+                  }
+                  onError={(e) => console.error("Video error:", e)}
+                />
+              )
+            )}
           </div>
         ) : (
-          <div className="text-gray-500">Không có hình ảnh.</div>
+          <div className="text-gray-500">Không có hình ảnh hoặc video.</div>
         )}
 
         <div className="mt-6 text-right">
           <Button onClick={() => setModalOpen(false)}>Đóng</Button>
         </div>
       </Modal>
-      {lightboxOpen && (
+      {lightboxOpen && selectedImages[photoIndex]?.type === "image" && (
         <Lightbox
-          style={{ zIndex: 100000 }}
-          mainSrc={selectedImages[photoIndex]}
-          nextSrc={selectedImages[(photoIndex + 1) % selectedImages.length]}
+          mainSrc={selectedImages[photoIndex].src}
+          nextSrc={
+            selectedImages[(photoIndex + 1) % selectedImages.length]?.type ===
+            "image"
+              ? selectedImages[(photoIndex + 1) % selectedImages.length].src
+              : null
+          }
           prevSrc={
             selectedImages[
               (photoIndex + selectedImages.length - 1) % selectedImages.length
-            ]
+            ]?.type === "image"
+              ? selectedImages[
+                  (photoIndex + selectedImages.length - 1) %
+                    selectedImages.length
+                ].src
+              : null
           }
           onCloseRequest={() => setLightboxOpen(false)}
           onMovePrevRequest={() =>

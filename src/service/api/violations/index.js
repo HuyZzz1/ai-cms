@@ -16,5 +16,20 @@ export const getPreviewCaptureQuery = async (path) => {
     responseType: "blob",
   });
 
-  return URL.createObjectURL(res.data);
+  let mimeType = res.data.type;
+
+  if (mimeType === "application/mp4") {
+    mimeType = "video/mp4";
+  }
+
+  const fixedBlob = new Blob([res.data], { type: mimeType });
+  const url = URL.createObjectURL(fixedBlob);
+
+  const fileType = mimeType.startsWith("image")
+    ? "image"
+    : mimeType.startsWith("video")
+    ? "video"
+    : "unknown";
+
+  return { url, fileType, mimeType };
 };
