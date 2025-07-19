@@ -10,12 +10,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
-import dayjs from "dayjs";
 import Modal from "react-modal";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-import { getPreviewCaptureQuery } from "@/service/api/violations";
-import ReactPlayer from "react-player";
+import {} from "@/service/api/violations";
 
 export default function TrafficViolationsTable({
   data = [],
@@ -125,6 +123,29 @@ export default function TrafficViolationsTable({
     return pages;
   };
 
+  const handlePreviewClick = async (paths = []) => {
+    try {
+      const results = paths.map((path) => {
+        const isImage = /\.(jpg|jpeg|png)$/i.test(path);
+        const isVideo = /\.(mp4|mov|avi)$/i.test(path);
+
+        const fileType = isImage ? "image" : isVideo ? "video" : "unknown";
+
+        const src = isImage
+          ? `${process.env.REACT_APP_API_URL}/v1/violations/preview-capture?path=${path}`
+          : path;
+
+        return { type: fileType, src };
+      });
+
+      setSelectedImages(results);
+      setPhotoIndex(0);
+      setModalOpen(true);
+    } catch (error) {
+      console.error("Error loading preview files:", error);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col gap-5">
@@ -217,30 +238,9 @@ export default function TrafficViolationsTable({
                           <Button
                             variant="link"
                             className="text-blue-600 hover:text-blue-800 p-0 h-auto font-medium"
-                            onClick={async () => {
-                              const paths = violation.evidences || [];
-
-                              try {
-                                const results = await Promise.all(
-                                  paths.map(async (path) => {
-                                    const { url, fileType } =
-                                      await getPreviewCaptureQuery(path);
-                                    return { src: url, type: fileType };
-                                  })
-                                );
-
-                                console.log("results", results);
-
-                                setSelectedImages(results);
-                                setPhotoIndex(0);
-                                setModalOpen(true);
-                              } catch (error) {
-                                console.error(
-                                  "Error loading preview files:",
-                                  error
-                                );
-                              }
-                            }}
+                            onClick={() =>
+                              handlePreviewClick(violation.evidences)
+                            }
                           >
                             {violation.evidence}
                           </Button>
@@ -353,15 +353,20 @@ export default function TrafficViolationsTable({
                   }}
                 />
               ) : (
-                <video
-                  controls
-                  src={file.src}
-                  className="w-[300px] h-[180px] border rounded"
-                  onLoadedMetadata={() =>
-                    console.log("Video loaded:", file.src)
-                  }
-                  onError={(e) => console.error("Video error:", e)}
-                />
+                <>
+                  <video
+                    controls
+                    autoPlay
+                    muted
+                    className="w-[300px] h-[180px] border rounded"
+                  >
+                    <source
+                      src={`https://camera.otalk.ai/${file.src}`}
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                </>
               )
             )}
           </div>
