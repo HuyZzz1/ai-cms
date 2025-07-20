@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import dayjs from "dayjs";
+import HlsPlayer from "../manager/HlsPlayer";
 
 const CAMERAS_ENDPOINT = "https://camera.otalk.ai/api/v1/cameras/stream/urls";
 const START_STREAM_ENDPOINT = "https://camera.otalk.ai/api/v1/streams/start";
@@ -258,23 +259,19 @@ export default function CameraDetail() {
   }, [selectedCamera]);
 
   useEffect(() => {
-    return () => {
-      onReload();
-      setPollingCount(0);
-    };
-  }, []);
-
-  useEffect(() => {
     const handleUnload = () => {
-      onReload();
+      stopStream();
       setPollingCount(0);
     };
 
     window.addEventListener("beforeunload", handleUnload);
     return () => {
+      stopStream();
       window.removeEventListener("beforeunload", handleUnload);
     };
-  }, []);
+  }, [stopStream]);
+
+  console.log("data", data);
 
   return (
     <DashboardLayout>
@@ -300,9 +297,13 @@ export default function CameraDetail() {
                 />
               </div>
             ) : (
-              <iframe
+              <HlsPlayer
                 src={data?.url}
-                style={{ width: "100%" }}
+                width="100%"
+                height={300}
+                controls={false}
+                autoPlay={true}
+                muted={true}
                 className="rounded-xl h-[800px] xxl:h-[500px] md:!h-[300px]"
               />
             )}

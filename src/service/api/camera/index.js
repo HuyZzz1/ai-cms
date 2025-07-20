@@ -14,7 +14,7 @@ export const createCameraQuery = async (params) => {
 };
 
 export const updateCameraQuery = async (params) => {
-  return await http.patch(`/v1/cameras/${params.id}`, params);
+  return await http.patch(`/v1/cameras/${params.id}/update`, params);
 };
 
 export const deleteCameraQuery = async (params) => {

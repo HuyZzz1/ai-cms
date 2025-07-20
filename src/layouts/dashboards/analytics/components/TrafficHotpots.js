@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { getTrafficHotspotsQuery } from "@/service/api/dashboard";
+import HlsPlayer from "@/layouts/camera/manager/HlsPlayer";
 
 const TrafficHotpots = () => {
   const { data } = useQuery({
@@ -27,10 +28,13 @@ const TrafficHotpots = () => {
                   <CardContent className="p-0">
                     <div className="relative rounded-t-xl overflow-hidden">
                       <div className="w-full h-[250px] pointer-events-none">
-                        <iframe
+                        <HlsPlayer
                           src={item?.cameraUrl}
-                          style={{ width: "100%", height: 300 }}
-                          className="rounded-xl object-contain"
+                          width="100%"
+                          height={300}
+                          controls={false}
+                          autoPlay={true}
+                          muted={true}
                         />
                       </div>
                     </div>
