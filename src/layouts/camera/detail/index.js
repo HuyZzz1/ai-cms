@@ -91,12 +91,20 @@ export default function CameraDetail() {
     }
   };
 
+  const onReload = () => {
+    setStreamUrl("");
+    setSourceUrl("");
+    setStartedAt(null);
+    setPollingCount(0);
+  };
+
   const pollForStream = async (cameraId, hlsUrl, attempt = 0) => {
     if (attempt >= 30) {
       console.warn("❌ Quá 30 lần polling – thử startStream() lại");
 
       // Gọi lại startStream() sau 1s để tránh spam liên tục
       setTimeout(() => {
+        onReload();
         startStream();
       }, 1000);
 
@@ -145,10 +153,7 @@ export default function CameraDetail() {
       console.warn("stopStream error:", err.message);
     }
 
-    setStreamUrl("");
-    setSourceUrl("");
-    setStartedAt(null);
-    setPollingCount(0);
+    onReload();
   }, [streamUrl]);
 
   useEffect(() => {
@@ -254,13 +259,15 @@ export default function CameraDetail() {
 
   useEffect(() => {
     return () => {
-      stopStream();
+      onReload();
+      setPollingCount(0);
     };
   }, []);
 
   useEffect(() => {
     const handleUnload = () => {
-      stopStream();
+      onReload();
+      setPollingCount(0);
     };
 
     window.addEventListener("beforeunload", handleUnload);
@@ -301,7 +308,7 @@ export default function CameraDetail() {
             )}
 
             {data?.status === "active" && (
-              <div className="absolute top-2 left-2">
+              <div className="absolute top-5 left-2">
                 <div className="flex items-center gap-1 bg-red-600 text-white px-2 py-1 rounded text-xs font-medium">
                   <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
                   LIVE
@@ -324,7 +331,7 @@ export default function CameraDetail() {
             <p className="font-medium text-md sm:text-base mb-1">
               Mã camera: {data?.device}
             </p>
-            <p className="text-sm  font-medium ">
+            <p className="text-sm font-medium ">
               Khu vực: {data?.districtId?.name}
             </p>
             <p className="text-sm font-medium ">Vị trí: {data?.location}</p>
@@ -340,8 +347,8 @@ export default function CameraDetail() {
                   Không nhận được luồng sau 30 giây, đang thử lại...
                 </span>
               ) : pollingCount > 0 ? (
-                <span className="text-blue-500">
-                  Chờ phân tích trực tiếp ({pollingCount}/30s)...
+                <span className="text-blue-500 font-semibold">
+                  Chờ luồng phân tích trực tuyến ({pollingCount}/30s)...
                 </span>
               ) : null}
             </div>
@@ -349,16 +356,14 @@ export default function CameraDetail() {
 
           {streamUrl && (
             <div className="stream-card" style={{ marginTop: 20 }}>
-              <div className="text-sm font-medium">PROCESSING & STREAMING</div>
-              <div style={{ fontSize: 12, marginTop: 5 }}>
-                Started: {startedAt}
-              </div>
-              <div style={{ fontSize: 12, marginTop: 5 }}>
-                Source: {sourceUrl}
-              </div>
-              <div style={{ fontSize: 12, marginTop: 5 }}>
-                Output: AI-enhanced HLS stream with object tracking
-              </div>
+              <p className="text-sm font-semibold">
+                ĐANG XỬ LÝ & PHÁT TRỰC TUYẾN
+              </p>
+              <p className="text-sm font-medium mt-2 ">Bắt đầu: {startedAt}</p>
+              <p className="text-sm font-medium mt-2">
+                Đầu ra: Luồng HLS cải tiến bằng AI với tính năng theo dõi đối
+                tượng
+              </p>
             </div>
           )}
         </div>
