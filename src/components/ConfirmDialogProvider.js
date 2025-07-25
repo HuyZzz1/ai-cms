@@ -14,7 +14,6 @@ export function ConfirmDialogProvider({ children }) {
     cancelText: "Huỷ",
     onConfirm: () => {},
   });
-
   const showConfirm = ({
     title,
     description,
