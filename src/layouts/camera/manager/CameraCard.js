@@ -75,11 +75,11 @@ export default function CameraCard({ camera }) {
       <EditCameraForm ref={editModal} />
       <Link to={`/management/camera/${camera.id}`}>
         <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 border">
-          <div className="relative aspect-video bg-gray-100 pointer-events-none">
+          <div className="relative  bg-gray-100 pointer-events-none">
             <HlsPlayer
               src={camera?.url}
               width="100%"
-              height={300}
+              height={250}
               controls={false}
               autoPlay={true}
               muted={true}
